@@ -10,7 +10,7 @@ main { min-height: calc(100vh - 52px); }
 .eyebrow { margin: 0 0 18px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
 h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.07em; line-height: .86; }
 .giant-button, .submit-button { border: 2px solid var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; transition: transform .18s, box-shadow .18s, background .18s; }
-.giant-button { width: min(88vw, 760px); padding: clamp(28px, 6vw, 60px) 24px; display: flex; flex-direction: column; align-items: center; gap: 18px; border-radius: 28px; box-shadow: 14px 14px 0 var(--brown); color: var(--paper); font-size: clamp(42px, 10vw, 128px); line-height: .9; text-align: center; text-decoration: none; animation: button-float 2.8s ease-in-out infinite; }
+.giant-button { width: min(88vw, 760px); padding: clamp(28px, 6vw, 60px) 24px; display: flex; flex-direction: column; align-items: center; gap: 18px; border-radius: 28px; box-shadow: 14px 14px 0 var(--brown); font-size: clamp(42px, 10vw, 128px); line-height: .9; text-align: center; animation: button-float 2.8s ease-in-out infinite; }
 .giant-button small { color: #b9b2ab; font-family: 'DM Mono', monospace; font-size: clamp(11px, 1.5vw, 15px); font-weight: 400; letter-spacing: .08em; text-transform: uppercase; }
 .giant-button:hover { background: var(--brown); color: var(--paper); box-shadow: 12px 12px 0 var(--ink); transform: translate(-5px, -5px); }
 .giant-button:active { transform: translate(5px, 5px); box-shadow: 2px 2px 0 var(--ink); }

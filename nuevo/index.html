@@ -6,22 +6,18 @@
     <link rel="icon" href="data:," />
     <meta name="description" content="Soy Pobre: una forma simple de contar tu historia y compartir dónde recibir ayuda." />
     <title>Soy Pobre</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
     <main>
-      <section class="hero" id="home" aria-labelledby="title">
+      <section class="hero" id="home" aria-labelledby="title" hidden>
         <h1 id="title" class="visually-hidden">Soy Pobre</h1>
-        <a class="giant-button" id="startButton" href="nuevo/">
-          <span>Soy Pobre</span>
-          <small>Clickea acá</small>
-        </a>
       </section>
 
-      <section class="form-section" id="formSection" aria-labelledby="formTitle" hidden>
+      <section class="form-section" id="formSection" aria-labelledby="formTitle">
         <div class="form-wrap">
-          <button class="back-link" id="backButton" type="button" onclick="document.getElementById('formSection').hidden = true; document.getElementById('home').hidden = false; window.scrollTo(0, 0);">← Volver</button>
+          <a class="back-link" href="../">← Volver</a>
           <p class="eyebrow">paso 01 / 01</p>
           <h2 id="formTitle">Contanos un poco<br /><em>de vos.</em></h2>
           <p class="form-lead">Dejanos un medio para recibir ayuda y, si querés, tu historia.</p>
@@ -59,6 +55,6 @@
       </section>
 
     </main>
-    <script src="app.js?v=2"></script>
+    <script src="../app.js?v=3"></script>
   </body>
 </html>
