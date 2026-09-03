@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
     <meta name="description" content="Soy Pobre: una forma simple de contar tu historia y compartir dónde recibir ayuda." />
     <title>Soy Pobre</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +16,7 @@
     <main>
       <section class="hero" id="home" aria-labelledby="title">
         <h1 id="title" class="visually-hidden">Soy Pobre</h1>
-        <button class="giant-button" id="startButton" type="button">
+        <button class="giant-button" id="startButton" type="button" onclick="document.getElementById('home').hidden = true; document.getElementById('formSection').hidden = false; window.scrollTo(0, 0);">
           <span>Soy Pobre</span>
           <small>Clickea acá</small>
         </button>
@@ -23,7 +24,7 @@
 
       <section class="form-section" id="formSection" aria-labelledby="formTitle" hidden>
         <div class="form-wrap">
-          <button class="back-link" id="backButton" type="button">← Volver</button>
+          <button class="back-link" id="backButton" type="button" onclick="document.getElementById('formSection').hidden = true; document.getElementById('home').hidden = false; window.scrollTo(0, 0);">← Volver</button>
           <p class="eyebrow">paso 01 / 01</p>
           <h2 id="formTitle">Contanos un poco<br /><em>de vos.</em></h2>
           <p class="form-lead">Dejanos un medio para recibir ayuda y, si querés, tu historia.</p>
@@ -61,6 +62,6 @@
       </section>
 
     </main>
-    <script src="app.js"></script>
+    <script src="app.js?v=2"></script>
   </body>
 </html>
