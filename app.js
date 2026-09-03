@@ -1,6 +1,5 @@
 const SUPABASE_URL = 'https://jbrjsvkdnyzptkxnflbe.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const TABLE = 'soypobre_requests';
 const BUCKET = 'soypobre-images';
 
@@ -37,6 +36,8 @@ form.addEventListener('submit', async (event) => {
   submitButton.firstChild.textContent = 'Guardando... ';
   let photoPath = null;
   try {
+    if (!window.supabase) throw new Error('Supabase no está disponible');
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     if (file) {
       const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
       photoPath = `${crypto.randomUUID()}-${safeName}`;
