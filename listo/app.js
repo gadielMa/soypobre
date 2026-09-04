@@ -26,7 +26,8 @@ form.addEventListener('submit', async (event) => {
   }
   const result = await supabase.from('soypobre_requests').insert({ alias, name, story, photo_path: photoPath });
   if (!result.error) {
+    localStorage.setItem('soypobre-profile', JSON.stringify({ alias, name, story, photoName: file?.name || null }));
     localStorage.removeItem('soypobre-alias');
-    window.location.href = '../';
+    window.location.href = '../perfil/';
   }
 });
