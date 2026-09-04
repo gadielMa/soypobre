@@ -22,7 +22,7 @@
         <label for="story">¿Querés contarnos de vos?</label>
         <textarea id="story" name="story" maxlength="1000" rows="4"></textarea>
 
-        <button type="submit">GUARDAR</button>
+        <button type="submit" onclick="localStorage.setItem('soypobre-profile', JSON.stringify({ alias: localStorage.getItem('soypobre-alias'), name: document.getElementById('name').value.trim() || null, story: document.getElementById('story').value.trim() || null, photoName: document.getElementById('photo').files[0]?.name || null })); localStorage.setItem('soypobre-pending-profile', 'true'); window.location.href = '../perfil/';">GUARDAR</button>
       </form>
     </main>
     <script src="app.js?v=2"></script>
