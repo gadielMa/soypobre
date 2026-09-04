@@ -58,6 +58,7 @@
   document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const status = document.getElementById('registerStatus');
+    const button = event.currentTarget.querySelector('button[type="submit"]');
     const password = document.getElementById('password').value;
     const passwordConfirmation = document.getElementById('passwordConfirmation').value;
     if (password !== passwordConfirmation) {
@@ -66,7 +67,10 @@
       return;
     }
     if (!window.supabase) return;
-    status.textContent = 'Registrando...';
+    status.textContent = '';
+    button.disabled = true;
+    button.classList.add('is-loading');
+    button.innerHTML = '<span>REGISTRANDO</span><i aria-hidden="true"></i>';
     const client = window.supabase.createClient('https://jbrjsvkdnyzptkxnflbe.supabase.co', 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1');
     const { error } = await client.auth.signUp({
       email: document.getElementById('email').value.trim(),
@@ -75,6 +79,9 @@
     });
     if (error) {
       status.textContent = error.message;
+      button.disabled = false;
+      button.classList.remove('is-loading');
+      button.textContent = 'REGISTRARME';
       return;
     }
     status.textContent = '';

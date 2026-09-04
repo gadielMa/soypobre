@@ -18,6 +18,9 @@ dd { margin: 8px 0 0; font-size: clamp(22px, 4vw, 34px); font-weight: 600; overf
 .register input { width: 100%; border: 0; border-bottom: 2px solid var(--brown); padding: 10px 0; outline: 0; background: transparent; color: var(--ink); font: inherit; font-size: 20px; }
 .register button { position: static; transform: none; width: 100%; margin-top: 20px; padding: 16px 24px; border: 2px solid #2d6a32; border-radius: 12px; background: var(--green); color: #fff; cursor: pointer; font: inherit; font-weight: 700; box-shadow: 0 5px 0 #2d6a32; }
 .register button:active { transform: translateY(2px); box-shadow: 0 3px 0 #2d6a32; }
+.register button.is-loading { display: inline-flex; align-items: center; justify-content: center; gap: 12px; cursor: wait; opacity: .9; }
+.register button.is-loading i { width: 18px; height: 18px; border: 3px solid rgb(255 255 255 / .45); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .register-status { min-height: 20px; margin: 8px 0 0; color: var(--brown); font-size: 14px; }
 .registration-notice { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgb(23 23 23 / .7); }
 .registration-notice[hidden] { display: none; }
