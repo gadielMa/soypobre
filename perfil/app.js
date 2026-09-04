@@ -27,6 +27,7 @@
     const text = document.getElementById('noticeText');
     const login = document.getElementById('noticeLogin');
     const close = document.getElementById('closeNotice');
+    const notice = document.getElementById('registrationNotice');
     eyebrow.hidden = existingEmail;
     text.hidden = existingEmail;
     login.hidden = existingEmail;
@@ -35,7 +36,8 @@
       : 'Revisá<br /><span>tu email.</span>';
     close.textContent = existingEmail ? 'INICIAR SESIÓN' : 'ENTENDIDO';
     close.dataset.next = existingEmail ? 'login' : 'close';
-    document.getElementById('registrationNotice').hidden = false;
+    notice.classList.toggle('existing-email', existingEmail);
+    notice.hidden = false;
   }
 
   async function refreshAccount() {
