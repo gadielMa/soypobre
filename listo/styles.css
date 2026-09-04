@@ -4,8 +4,8 @@ html { overflow-x: hidden; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
 main { min-height: 100vh; display: grid; place-items: center; padding: 48px 24px; }
 form { width: min(100%, 760px); display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
-h1 { width: 100%; max-width: 100%; margin: 0 0 44px; font-size: min(8vw, 92px); line-height: .92; letter-spacing: -.06em; overflow-wrap: anywhere; }
-h1 span { color: var(--green); }
+h1 { width: 100%; max-width: 100%; margin: 0 0 10px; font-size: min(8vw, 92px); line-height: .92; letter-spacing: -.06em; overflow-wrap: anywhere; }
+h1 span { color: var(--green); white-space: nowrap; }
 label { margin-top: 18px; font-size: clamp(20px, 3vw, 30px); font-weight: 700; }
 input, textarea { width: 100%; border: 0; border-bottom: 3px solid var(--brown); padding: 10px 0 14px; outline: 0; background: transparent; color: var(--brown); font: inherit; font-size: clamp(24px, 4vw, 42px); }
 textarea { resize: vertical; }
@@ -20,7 +20,7 @@ button:active { transform: translate(-50%, 2px); box-shadow: 0 5px 0 var(--green
 @media (max-width: 600px) {
   main { padding: 32px 20px; }
   form { width: 100%; }
-  h1 { margin-bottom: 32px; font-size: 52px; line-height: .95; overflow-wrap: anywhere; }
+  h1 { margin-bottom: 10px; font-size: 44px; line-height: .95; overflow-wrap: anywhere; }
   label { font-size: 20px; line-height: 1.15; }
   input, textarea { font-size: 24px; max-width: 100%; }
   button { width: calc(100% - 40px); max-width: 320px; bottom: 20px; font-size: 20px; }
