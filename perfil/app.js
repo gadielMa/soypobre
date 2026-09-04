@@ -25,12 +25,10 @@
     const eyebrow = document.getElementById('noticeEyebrow');
     const title = document.getElementById('noticeTitle');
     const text = document.getElementById('noticeText');
-    const login = document.getElementById('noticeLogin');
     const close = document.getElementById('closeNotice');
     const notice = document.getElementById('registrationNotice');
     eyebrow.hidden = existingEmail;
     text.hidden = existingEmail;
-    login.hidden = existingEmail;
     title.innerHTML = existingEmail
       ? 'Este email ya se encuentra registrado.'
       : 'Revisá<br /><span>tu email.</span>';
