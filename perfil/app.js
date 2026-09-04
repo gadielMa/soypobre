@@ -68,7 +68,20 @@
     if (!window.supabase) return;
     status.textContent = 'Registrando...';
     const client = window.supabase.createClient('https://jbrjsvkdnyzptkxnflbe.supabase.co', 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1');
-    const { error } = await client.auth.signUp({ email: document.getElementById('email').value.trim(), password });
-    status.textContent = error ? error.message : 'Revisá tu correo para confirmar el registro.';
+    const { error } = await client.auth.signUp({
+      email: document.getElementById('email').value.trim(),
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/soypobre/perfil/` },
+    });
+    if (error) {
+      status.textContent = error.message;
+      return;
+    }
+    status.textContent = '';
+    document.getElementById('registrationNotice').hidden = false;
+  });
+
+  document.getElementById('closeNotice')?.addEventListener('click', () => {
+    document.getElementById('registrationNotice').hidden = true;
   });
 })();

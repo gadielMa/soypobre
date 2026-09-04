@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
     <title>Soy Pobre</title>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -35,6 +35,14 @@
       </section>
       <p id="empty" class="empty">No encontramos una historia cargada.</p>
     </main>
-    <script src="app.js?v=5"></script>
+    <section id="registrationNotice" class="registration-notice" role="dialog" aria-modal="true" aria-labelledby="noticeTitle" hidden>
+      <div>
+        <p class="eyebrow">un paso más</p>
+        <h2 id="noticeTitle">Revisá<br /><span>tu email.</span></h2>
+        <p>Te mandamos un enlace para confirmar tu cuenta.</p>
+        <button id="closeNotice" type="button">ENTENDIDO</button>
+      </div>
+    </section>
+    <script src="app.js?v=6"></script>
   </body>
 </html>
