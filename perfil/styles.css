@@ -3,7 +3,7 @@
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
 .account-area { position: fixed; top: 20px; right: 20px; z-index: 20; }
 .account-area[hidden], .account-menu[hidden] { display: none; }
-.account-button { width: 52px; height: 52px; border: 2px solid var(--brown); border-radius: 50%; background: var(--ink); color: var(--paper); font: inherit; font-weight: 700; cursor: pointer; }
+.account-button { width: 52px; height: 52px; border: 2px solid var(--brown); border-radius: 50%; background: var(--brown); color: var(--green); font: inherit; font-size: 26px; font-weight: 700; cursor: pointer; }
 .account-menu { position: absolute; top: 62px; right: 0; width: 190px; padding: 14px; border: 2px solid var(--brown); border-radius: 14px; background: var(--paper); box-shadow: 0 10px 30px rgb(0 0 0 / .18); }
 .account-menu strong { display: block; margin-bottom: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
 .account-menu button { width: 100%; border: 0; border-radius: 8px; padding: 10px; background: var(--brown); color: #fff; font: inherit; cursor: pointer; }

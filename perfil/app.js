@@ -9,15 +9,11 @@
     'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1'
   );
 
-  function initials(name) {
-    return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
-  }
-
   function showAccount(user) {
     const name = user.user_metadata?.soypobre_name || profile?.name || user.email;
     document.querySelector('.register').hidden = true;
     document.getElementById('accountArea').hidden = false;
-    document.getElementById('accountInitials').textContent = initials(name) || 'SP';
+    document.getElementById('accountInitials').textContent = 'P';
     document.getElementById('accountName').textContent = name;
   }
 

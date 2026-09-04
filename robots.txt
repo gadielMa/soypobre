@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /nuevo/
+Disallow: /listo/
+Disallow: /perfil/
+Disallow: /ingresar/
+
+Sitemap: https://induliru.com/soypobre/sitemap.xml
