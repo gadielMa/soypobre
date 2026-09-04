@@ -18,21 +18,19 @@
       <section class="form-section" id="formSection" aria-labelledby="formTitle">
         <div class="form-wrap">
           <a class="back-link" href="../">← Volver</a>
-          <p class="eyebrow">paso 01 / 01</p>
-          <h2 id="formTitle">Contanos un poco<br /><em>de vos.</em></h2>
-          <p class="form-lead">Dejanos un medio para recibir ayuda y, si querés, tu historia.</p>
+          <p class="eyebrow">para recibir ayuda</p>
+          <h2 id="formTitle">MI ALIAS<br /><em>ES:</em></h2>
+          <p class="form-lead">Escribí tu Alias. También podés dejar tu CBU, una foto y tu historia.</p>
 
           <form id="helpForm" novalidate>
+            <div class="field-group">
+              <label for="alias">Mi Alias</label>
+              <input id="alias" name="alias" maxlength="50" placeholder="tu.alias" autocomplete="off" autofocus />
+            </div>
             <div class="field-group">
               <label for="cbu">CBU <span>(opcional)</span></label>
               <input id="cbu" name="cbu" inputmode="numeric" maxlength="22" placeholder="22 dígitos" autocomplete="off" />
             </div>
-            <div class="or-divider"><span>o</span></div>
-            <div class="field-group">
-              <label for="alias">Alias <span>(opcional)</span></label>
-              <input id="alias" name="alias" maxlength="50" placeholder="tu.alias" autocomplete="off" />
-            </div>
-            <p class="field-hint">Completá al menos uno de los dos.</p>
 
             <div class="field-group story-group">
               <label for="story">Tu historia <span>(opcional)</span></label>

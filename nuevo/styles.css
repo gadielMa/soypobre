@@ -25,7 +25,7 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.07em; line-height: .86; 
 .back-link { margin-bottom: clamp(58px, 9vw, 112px); }
 h2 { font-size: clamp(56px, 9vw, 108px); }
 h2 em { color: var(--brown); font-style: normal; }
-.form-lead { color: var(--muted); font-size: 18px; margin: 26px 0 52px; }
+.form-lead { color: var(--muted); font-size: 18px; margin: 26px 0 52px; max-width: 560px; }
 .field-group { position: relative; margin-top: 28px; }
 label { display: block; font-family: 'DM Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
 label span { color: var(--muted); text-transform: none; }
