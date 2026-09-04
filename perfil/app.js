@@ -58,10 +58,17 @@
   document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const status = document.getElementById('registerStatus');
+    const password = document.getElementById('password').value;
+    const passwordConfirmation = document.getElementById('passwordConfirmation').value;
+    if (password !== passwordConfirmation) {
+      status.textContent = 'Las contraseñas no coinciden.';
+      document.getElementById('passwordConfirmation').focus();
+      return;
+    }
     if (!window.supabase) return;
     status.textContent = 'Registrando...';
     const client = window.supabase.createClient('https://jbrjsvkdnyzptkxnflbe.supabase.co', 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1');
-    const { error } = await client.auth.signUp({ email: document.getElementById('email').value.trim(), password: document.getElementById('password').value });
+    const { error } = await client.auth.signUp({ email: document.getElementById('email').value.trim(), password });
     status.textContent = error ? error.message : 'Revisá tu correo para confirmar el registro.';
   });
 })();
