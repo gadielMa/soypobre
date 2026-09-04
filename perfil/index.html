@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
     <title>Soy Pobre</title>
-    <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="styles.css?v=8" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -28,6 +28,16 @@
           <div id="storyRow"><dt>Historia</dt><dd id="profileStory"></dd></div>
           <div id="photoRow"><dt>Foto</dt><dd id="profilePhoto"></dd></div>
         </dl>
+        <button id="editButton" class="edit-button" type="button">EDITAR DATOS</button>
+        <form id="editForm" class="edit-form" hidden>
+          <label for="editName">Nombre</label>
+          <input id="editName" type="text" maxlength="100" autocomplete="name" />
+          <input id="editPhoto" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+          <label class="edit-photo" for="editPhoto"><span id="editPhotoLabel">Agregar una foto</span><strong>+</strong></label>
+          <label for="editStory">Historia</label>
+          <textarea id="editStory" maxlength="1000" rows="4"></textarea>
+          <button type="submit">GUARDAR CAMBIOS</button>
+        </form>
         <section class="register">
           <p class="register-question">¿Querés registrarte?</p>
           <form id="registerForm">
@@ -53,6 +63,6 @@
         <button id="closeNotice" type="button">ENTENDIDO</button>
       </div>
     </section>
-    <script src="app.js?v=11"></script>
+    <script src="app.js?v=12"></script>
   </body>
 </html>

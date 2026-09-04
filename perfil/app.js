@@ -74,6 +74,17 @@
     return file;
   }
 
+  async function storePhoto(file) {
+    const db = await database();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      file ? tx.objectStore(STORE).put(file, 'photo') : tx.objectStore(STORE).delete('photo');
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  }
+
   function showValue(rowId, value) {
     const row = document.getElementById(rowId);
     if (!value) row.hidden = true;
@@ -153,10 +164,50 @@
     document.getElementById('registrationNotice').hidden = true;
   });
 
+  let editedPhoto = null;
+  document.getElementById('editButton')?.addEventListener('click', () => {
+    if (!profile) return;
+    document.getElementById('editName').value = profile.name || '';
+    document.getElementById('editStory').value = profile.story || '';
+    document.getElementById('editForm').hidden = false;
+    document.getElementById('editButton').hidden = true;
+  });
+
+  document.getElementById('editPhoto')?.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      event.target.value = '';
+      document.getElementById('editPhotoLabel').textContent = 'La foto debe pesar menos de 10 MB';
+      return;
+    }
+    editedPhoto = file;
+    document.getElementById('editPhotoLabel').textContent = 'Foto lista para guardar';
+  });
+
+  document.getElementById('editForm')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!profile) return;
+    profile.name = document.getElementById('editName').value.trim() || null;
+    profile.story = document.getElementById('editStory').value.trim() || null;
+    if (editedPhoto) profile.photoName = editedPhoto.name;
+    localStorage.setItem('soypobre-profile', JSON.stringify(profile));
+    if (editedPhoto) await storePhoto(editedPhoto);
+    window.location.reload();
+  });
+
   document.getElementById('accountButton')?.addEventListener('click', () => {
     const menu = document.getElementById('accountMenu');
     menu.hidden = !menu.hidden;
     document.getElementById('accountButton').setAttribute('aria-expanded', String(!menu.hidden));
+  });
+
+  document.addEventListener('click', (event) => {
+    const area = document.getElementById('accountArea');
+    if (!area.hidden && !area.contains(event.target)) {
+      document.getElementById('accountMenu').hidden = true;
+      document.getElementById('accountButton').setAttribute('aria-expanded', 'false');
+    }
   });
 
   document.getElementById('signOutButton')?.addEventListener('click', async () => {
