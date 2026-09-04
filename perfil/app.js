@@ -122,6 +122,9 @@
       return;
     }
     status.textContent = '';
+    button.disabled = false;
+    button.classList.remove('is-loading');
+    button.textContent = 'REGISTRARME';
     document.getElementById('registrationNotice').hidden = false;
   });
 
