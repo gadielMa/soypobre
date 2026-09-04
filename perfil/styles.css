@@ -10,6 +10,7 @@ dl { margin: 0; }
 dl div { padding: 18px 0; border-bottom: 2px solid var(--brown); }
 dt { color: var(--brown); font-size: 13px; font-weight: 700; text-transform: uppercase; }
 dd { margin: 8px 0 0; font-size: clamp(22px, 4vw, 34px); font-weight: 600; overflow-wrap: anywhere; }
+.profile-image { display: block; width: min(100%, 340px); max-height: 340px; margin-top: 12px; border-radius: 16px; object-fit: cover; }
 .register { margin-top: 48px; }
 .register-question { margin: 0 0 24px; color: var(--green); font-size: clamp(24px, 4vw, 40px); font-weight: 700; }
 .register form { display: grid; gap: 10px; max-width: 460px; }

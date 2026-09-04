@@ -1,43 +1,89 @@
 (() => {
-const profile = JSON.parse(localStorage.getItem('soypobre-profile') || 'null');
-const profileSection = document.getElementById('profile');
-const empty = document.getElementById('empty');
+  const profile = JSON.parse(localStorage.getItem('soypobre-profile') || 'null');
+  const profileSection = document.getElementById('profile');
+  const empty = document.getElementById('empty');
+  const DB_NAME = 'soypobre';
+  const STORE = 'pending';
 
-if (profile?.alias) {
-  profileSection.hidden = false;
-  empty.hidden = true;
-  document.getElementById('profileAlias').textContent = profile.alias;
-  if (profile.name) document.getElementById('profileName').textContent = profile.name;
-  else document.getElementById('nameRow').hidden = true;
-  if (profile.story) document.getElementById('profileStory').textContent = profile.story;
-  else document.getElementById('storyRow').hidden = true;
-  if (profile.photoName) document.getElementById('profilePhoto').textContent = profile.photoName;
-  else document.getElementById('photoRow').hidden = true;
-}
+  function database() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onupgradeneeded = () => request.result.createObjectStore(STORE);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
 
-if (profile?.alias && localStorage.getItem('soypobre-pending-profile') === 'true') {
-  const supabase = window.supabase.createClient(
-    'https://jbrjsvkdnyzptkxnflbe.supabase.co',
-    'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1',
-  );
-  supabase.from('soypobre_requests').insert({ alias: profile.alias, name: profile.name || null, story: profile.story || null }).then(({ error }) => {
-    if (!error) localStorage.removeItem('soypobre-pending-profile');
-    else console.error(error);
+  async function getPhoto() {
+    const db = await database();
+    const file = await new Promise((resolve, reject) => {
+      const request = db.transaction(STORE, 'readonly').objectStore(STORE).get('photo');
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+    return file;
+  }
+
+  async function clearPhoto() {
+    const db = await database();
+    const tx = db.transaction(STORE, 'readwrite');
+    tx.objectStore(STORE).delete('photo');
+    db.close();
+  }
+
+  function showValue(rowId, value) {
+    const row = document.getElementById(rowId);
+    if (!value) row.hidden = true;
+    return row;
+  }
+
+  async function persist(file) {
+    if (!profile?.alias || localStorage.getItem('soypobre-pending-profile') !== 'true' || !window.supabase) return;
+    const supabase = window.supabase.createClient('https://jbrjsvkdnyzptkxnflbe.supabase.co', 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1');
+    let photoPath = null;
+    if (file) {
+      photoPath = `${crypto.randomUUID()}-${file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-')}`;
+      const upload = await supabase.storage.from('soypobre-images').upload(photoPath, file, { contentType: file.type });
+      if (upload.error) { console.error(upload.error); photoPath = null; }
+    }
+    const { error } = await supabase.from('soypobre_requests').insert({ alias: profile.alias, name: profile.name, story: profile.story, photo_path: photoPath });
+    if (!error) {
+      localStorage.removeItem('soypobre-pending-profile');
+      await clearPhoto();
+    } else console.error(error);
+  }
+
+  if (profile) {
+    profileSection.hidden = false;
+    empty.hidden = true;
+    document.getElementById('profileAlias').textContent = profile.alias || 'No informado';
+    if (profile.name) document.getElementById('profileName').textContent = profile.name;
+    showValue('nameRow', profile.name);
+    if (profile.story) document.getElementById('profileStory').textContent = profile.story;
+    showValue('storyRow', profile.story);
+    const photoRow = showValue('photoRow', profile.photoName);
+    if (profile.photoName) document.getElementById('profilePhoto').textContent = profile.photoName;
+    getPhoto().then((file) => {
+      if (file && photoRow) {
+        photoRow.hidden = false;
+        const image = document.createElement('img');
+        image.src = URL.createObjectURL(file);
+        image.alt = 'Foto cargada';
+        image.className = 'profile-image';
+        document.getElementById('profilePhoto').replaceChildren(image);
+      }
+      persist(file).catch(console.error);
+    }).catch(console.error);
+  }
+
+  document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const status = document.getElementById('registerStatus');
+    if (!window.supabase) return;
+    status.textContent = 'Registrando...';
+    const client = window.supabase.createClient('https://jbrjsvkdnyzptkxnflbe.supabase.co', 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1');
+    const { error } = await client.auth.signUp({ email: document.getElementById('email').value.trim(), password: document.getElementById('password').value });
+    status.textContent = error ? error.message : 'Revisá tu correo para confirmar el registro.';
   });
-}
-
-const registerForm = document.getElementById('registerForm');
-registerForm?.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const status = document.getElementById('registerStatus');
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  status.textContent = 'Registrando...';
-  const supabase = window.supabase.createClient(
-    'https://jbrjsvkdnyzptkxnflbe.supabase.co',
-    'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1',
-  );
-  const { error } = await supabase.auth.signUp({ email, password });
-  status.textContent = error ? error.message : 'Revisá tu correo para confirmar el registro.';
-});
 })();
