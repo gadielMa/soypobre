@@ -21,6 +21,23 @@
     document.getElementById('accountName').textContent = name;
   }
 
+  function showRegistrationNotice(existingEmail = false) {
+    const eyebrow = document.getElementById('noticeEyebrow');
+    const title = document.getElementById('noticeTitle');
+    const text = document.getElementById('noticeText');
+    const login = document.getElementById('noticeLogin');
+    const close = document.getElementById('closeNotice');
+    eyebrow.hidden = existingEmail;
+    text.hidden = existingEmail;
+    login.hidden = existingEmail;
+    title.innerHTML = existingEmail
+      ? 'Este email ya se encuentra registrado.'
+      : 'Revisá<br /><span>tu email.</span>';
+    close.textContent = existingEmail ? 'INICIAR SESIÓN' : 'ENTENDIDO';
+    close.dataset.next = existingEmail ? 'login' : 'close';
+    document.getElementById('registrationNotice').hidden = false;
+  }
+
   async function refreshAccount() {
     if (!client) return;
     const { data: { session } } = await client.auth.getSession();
@@ -106,7 +123,7 @@
     button.disabled = true;
     button.classList.add('is-loading');
     button.innerHTML = '<span>REGISTRANDO</span><i aria-hidden="true"></i>';
-    const { error } = await client.auth.signUp({
+    const { data, error } = await client.auth.signUp({
       email: document.getElementById('email').value.trim(),
       password,
       options: {
@@ -125,10 +142,14 @@
     button.disabled = false;
     button.classList.remove('is-loading');
     button.textContent = 'REGISTRARME';
-    document.getElementById('registrationNotice').hidden = false;
+    showRegistrationNotice(data.user?.identities?.length === 0);
   });
 
   document.getElementById('closeNotice')?.addEventListener('click', () => {
+    if (document.getElementById('closeNotice').dataset.next === 'login') {
+      window.location.assign('../ingresar/');
+      return;
+    }
     document.getElementById('registrationNotice').hidden = true;
   });
 
