@@ -14,7 +14,7 @@
   }
 
   function showAccount(user) {
-    const name = user.user_metadata?.full_name || user.user_metadata?.name || profile?.name || user.email;
+    const name = user.user_metadata?.soypobre_name || profile?.name || user.email;
     document.querySelector('.register').hidden = true;
     document.getElementById('accountArea').hidden = false;
     document.getElementById('accountInitials').textContent = initials(name) || 'SP';
@@ -24,7 +24,15 @@
   async function refreshAccount() {
     if (!client) return;
     const { data: { session } } = await client.auth.getSession();
-    if (session?.user) showAccount(session.user);
+    if (!session?.user) return;
+    if (profile?.name && session.user.user_metadata?.soypobre_name !== profile.name) {
+      const { data, error } = await client.auth.updateUser({ data: { soypobre_name: profile.name } });
+      if (!error && data.user) {
+        showAccount(data.user);
+        return;
+      }
+    }
+    showAccount(session.user);
   }
 
   function database() {
@@ -103,7 +111,7 @@
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/soypobre/perfil/`,
-        data: { full_name: profile?.name || '' },
+        data: { soypobre_name: profile?.name || '' },
       },
     });
     if (error) {
