@@ -20,6 +20,7 @@ dd { margin: 8px 0 0; font-size: clamp(22px, 4vw, 34px); font-weight: 600; overf
 .register button:active { transform: translateY(2px); box-shadow: 0 3px 0 #2d6a32; }
 .register-status { min-height: 20px; margin: 8px 0 0; color: var(--brown); font-size: 14px; }
 .registration-notice { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgb(23 23 23 / .7); }
+.registration-notice[hidden] { display: none; }
 .registration-notice > div { width: min(100%, 440px); padding: 36px; border: 2px solid var(--brown); border-radius: 20px; background: var(--paper); box-shadow: 0 16px 50px rgb(0 0 0 / .35); }
 .registration-notice h2 { margin: 0; font-size: clamp(44px, 10vw, 70px); line-height: .9; letter-spacing: -.06em; }
 .registration-notice h2 span { color: var(--green); }
