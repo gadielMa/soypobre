@@ -4,6 +4,28 @@
   const empty = document.getElementById('empty');
   const DB_NAME = 'soypobre';
   const STORE = 'pending';
+  const client = window.supabase?.createClient(
+    'https://jbrjsvkdnyzptkxnflbe.supabase.co',
+    'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1'
+  );
+
+  function initials(name) {
+    return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+  }
+
+  function showAccount(user) {
+    const name = user.user_metadata?.full_name || user.user_metadata?.name || profile?.name || user.email;
+    document.querySelector('.register').hidden = true;
+    document.getElementById('accountArea').hidden = false;
+    document.getElementById('accountInitials').textContent = initials(name) || 'SP';
+    document.getElementById('accountName').textContent = name;
+  }
+
+  async function refreshAccount() {
+    if (!client) return;
+    const { data: { session } } = await client.auth.getSession();
+    if (session?.user) showAccount(session.user);
+  }
 
   function database() {
     return new Promise((resolve, reject) => {
@@ -55,6 +77,11 @@
     }).catch(console.error);
   }
 
+  refreshAccount().catch(console.error);
+  client?.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) showAccount(session.user);
+  });
+
   document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const status = document.getElementById('registerStatus');
@@ -66,16 +93,18 @@
       document.getElementById('passwordConfirmation').focus();
       return;
     }
-    if (!window.supabase) return;
+    if (!client) return;
     status.textContent = '';
     button.disabled = true;
     button.classList.add('is-loading');
     button.innerHTML = '<span>REGISTRANDO</span><i aria-hidden="true"></i>';
-    const client = window.supabase.createClient('https://jbrjsvkdnyzptkxnflbe.supabase.co', 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1');
     const { error } = await client.auth.signUp({
       email: document.getElementById('email').value.trim(),
       password,
-      options: { emailRedirectTo: `${window.location.origin}/soypobre/perfil/` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/soypobre/perfil/`,
+        data: { full_name: profile?.name || '' },
+      },
     });
     if (error) {
       status.textContent = error.message;
@@ -90,5 +119,16 @@
 
   document.getElementById('closeNotice')?.addEventListener('click', () => {
     document.getElementById('registrationNotice').hidden = true;
+  });
+
+  document.getElementById('accountButton')?.addEventListener('click', () => {
+    const menu = document.getElementById('accountMenu');
+    menu.hidden = !menu.hidden;
+    document.getElementById('accountButton').setAttribute('aria-expanded', String(!menu.hidden));
+  });
+
+  document.getElementById('signOutButton')?.addEventListener('click', async () => {
+    await client?.auth.signOut();
+    window.location.reload();
   });
 })();

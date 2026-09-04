@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
     <title>Soy Pobre</title>
-    <link rel="stylesheet" href="styles.css?v=4" />
+    <link rel="stylesheet" href="styles.css?v=5" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
+    <div id="accountArea" class="account-area" hidden>
+      <button id="accountButton" class="account-button" type="button" aria-expanded="false" aria-controls="accountMenu">
+        <span id="accountInitials"></span>
+      </button>
+      <div id="accountMenu" class="account-menu" hidden>
+        <strong id="accountName"></strong>
+        <button id="signOutButton" type="button">Cerrar sesión</button>
+      </div>
+    </div>
     <main>
       <section id="profile" class="profile" hidden>
         <p class="eyebrow">tu información</p>
@@ -43,6 +52,6 @@
         <button id="closeNotice" type="button">ENTENDIDO</button>
       </div>
     </section>
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
   </body>
 </html>
