@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <title>Listo</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <main>
+      <form id="detailsForm">
+        <h1>LISTO, AHORA<br />EMPEZARÁS A<br /><span>RECIBIR DINERO.</span></h1>
+
+        <label for="name">¿Querés decirnos tu nombre?</label>
+        <input id="name" name="name" type="text" maxlength="100" autocomplete="name" />
+
+        <label for="photo">¿Querés subir una foto?</label>
+        <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" />
+
+        <label for="story">¿Querés contarnos de vos?</label>
+        <textarea id="story" name="story" maxlength="1000" rows="4"></textarea>
+
+        <button type="submit">GUARDAR</button>
+      </form>
+    </main>
+    <script src="app.js?v=1"></script>
+  </body>
+</html>
