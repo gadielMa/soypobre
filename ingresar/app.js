@@ -14,12 +14,19 @@
     button.classList.add('is-loading');
     button.textContent = 'INGRESANDO...';
     status.textContent = '';
-    const { error } = await client.auth.signInWithPassword({
+    const { data, error } = await client.auth.signInWithPassword({
       email: document.getElementById('email').value.trim(),
       password: document.getElementById('password').value,
     });
     if (error) {
       status.textContent = 'Email o contraseña incorrectos.';
+      button.disabled = false;
+      button.classList.remove('is-loading');
+      button.textContent = 'INGRESAR';
+      return;
+    }
+    if (!data.user?.user_metadata?.soypobre_name) {
+      status.textContent = 'Esta cuenta no está registrada en SoyPobre.';
       button.disabled = false;
       button.classList.remove('is-loading');
       button.textContent = 'INGRESAR';

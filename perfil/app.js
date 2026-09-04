@@ -43,14 +43,7 @@
   async function refreshAccount() {
     if (!client) return;
     const { data: { session } } = await client.auth.getSession();
-    if (!session?.user) return;
-    if (profile?.name && session.user.user_metadata?.soypobre_name !== profile.name) {
-      const { data, error } = await client.auth.updateUser({ data: { soypobre_name: profile.name } });
-      if (!error && data.user) {
-        showAccount(data.user);
-        return;
-      }
-    }
+    if (!session?.user?.user_metadata?.soypobre_name) return;
     showAccount(session.user);
   }
 
@@ -117,7 +110,7 @@
 
   refreshAccount().catch(console.error);
   client?.auth.onAuthStateChange((_event, session) => {
-    if (session?.user) showAccount(session.user);
+    if (session?.user?.user_metadata?.soypobre_name) showAccount(session.user);
   });
 
   document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
