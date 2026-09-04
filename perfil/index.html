@@ -18,7 +18,17 @@
           <div id="storyRow"><dt>Historia</dt><dd id="profileStory"></dd></div>
           <div id="photoRow"><dt>Foto</dt><dd id="profilePhoto"></dd></div>
         </dl>
-        <p class="register-question">¿Querés registrarte?</p>
+        <section class="register">
+          <p class="register-question">¿Querés registrarte?</p>
+          <form id="registerForm">
+            <label for="email">Usuario</label>
+            <input id="email" type="email" autocomplete="email" required />
+            <label for="password">Contraseña</label>
+            <input id="password" type="password" minlength="6" autocomplete="new-password" required />
+            <button type="submit">REGISTRARME</button>
+            <p id="registerStatus" class="register-status" role="status"></p>
+          </form>
+        </section>
       </section>
       <p id="empty" class="empty">No encontramos una historia cargada.</p>
     </main>

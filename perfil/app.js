@@ -13,3 +13,18 @@ if (profile?.alias) {
   if (profile.photoName) document.getElementById('profilePhoto').textContent = profile.photoName;
   else document.getElementById('photoRow').hidden = true;
 }
+
+const registerForm = document.getElementById('registerForm');
+registerForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const status = document.getElementById('registerStatus');
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  status.textContent = 'Registrando...';
+  const supabase = window.supabase.createClient(
+    'https://jbrjsvkdnyzptkxnflbe.supabase.co',
+    'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1',
+  );
+  const { error } = await supabase.auth.signUp({ email, password });
+  status.textContent = error ? error.message : 'Revisá tu correo para confirmar el registro.';
+});

@@ -10,6 +10,13 @@ dl { margin: 0; }
 dl div { padding: 18px 0; border-bottom: 2px solid var(--brown); }
 dt { color: var(--brown); font-size: 13px; font-weight: 700; text-transform: uppercase; }
 dd { margin: 8px 0 0; font-size: clamp(22px, 4vw, 34px); font-weight: 600; overflow-wrap: anywhere; }
-.register-question { margin: 48px 0 0; color: var(--green); font-size: clamp(24px, 4vw, 40px); font-weight: 700; }
+.register { margin-top: 48px; }
+.register-question { margin: 0 0 24px; color: var(--green); font-size: clamp(24px, 4vw, 40px); font-weight: 700; }
+.register form { display: grid; gap: 10px; max-width: 460px; }
+.register label { margin-top: 12px; color: var(--brown); font-size: 13px; font-weight: 700; text-transform: uppercase; }
+.register input { width: 100%; border: 0; border-bottom: 2px solid var(--brown); padding: 10px 0; outline: 0; background: transparent; color: var(--ink); font: inherit; font-size: 20px; }
+.register button { position: static; transform: none; width: 100%; margin-top: 20px; padding: 16px 24px; border: 2px solid #2d6a32; border-radius: 12px; background: var(--green); color: #fff; cursor: pointer; font: inherit; font-weight: 700; box-shadow: 0 5px 0 #2d6a32; }
+.register button:active { transform: translateY(2px); box-shadow: 0 3px 0 #2d6a32; }
+.register-status { min-height: 20px; margin: 8px 0 0; color: var(--brown); font-size: 14px; }
 .empty { font-size: 20px; }
 @media (max-width: 600px) { main { padding: 32px 20px; } h1 { margin-bottom: 32px; font-size: 52px; } }
