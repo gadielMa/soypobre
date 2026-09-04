@@ -8,7 +8,9 @@
   function database() {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, 1);
-      request.onupgradeneeded = () => request.result.createObjectStore(STORE);
+      request.onupgradeneeded = () => {
+        if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE);
+      };
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
@@ -25,33 +27,10 @@
     return file;
   }
 
-  async function clearPhoto() {
-    const db = await database();
-    const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).delete('photo');
-    db.close();
-  }
-
   function showValue(rowId, value) {
     const row = document.getElementById(rowId);
     if (!value) row.hidden = true;
     return row;
-  }
-
-  async function persist(file) {
-    if (!profile?.alias || localStorage.getItem('soypobre-pending-profile') !== 'true' || !window.supabase) return;
-    const supabase = window.supabase.createClient('https://jbrjsvkdnyzptkxnflbe.supabase.co', 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1');
-    let photoPath = null;
-    if (file) {
-      photoPath = `${crypto.randomUUID()}-${file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-')}`;
-      const upload = await supabase.storage.from('soypobre-images').upload(photoPath, file, { contentType: file.type });
-      if (upload.error) { console.error(upload.error); photoPath = null; }
-    }
-    const { error } = await supabase.from('soypobre_requests').insert({ alias: profile.alias, name: profile.name, story: profile.story, photo_path: photoPath });
-    if (!error) {
-      localStorage.removeItem('soypobre-pending-profile');
-      await clearPhoto();
-    } else console.error(error);
   }
 
   if (profile) {
@@ -73,7 +52,6 @@
         image.className = 'profile-image';
         document.getElementById('profilePhoto').replaceChildren(image);
       }
-      persist(file).catch(console.error);
     }).catch(console.error);
   }
 
