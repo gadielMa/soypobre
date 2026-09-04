@@ -3,9 +3,20 @@
   const photoLabel = document.getElementById('photo-label');
   const DB_NAME = 'soypobre';
   const STORE = 'pending';
+  const MAX_PHOTO_SIZE = 10 * 1024 * 1024;
+  let selectedPhoto = null;
 
   photoInput.addEventListener('change', () => {
-    photoLabel.textContent = photoInput.files[0]?.name || '¿Querés subir una foto tuya?';
+    const file = photoInput.files[0];
+    if (!file) return;
+    if (file.size > MAX_PHOTO_SIZE) {
+      selectedPhoto = null;
+      photoInput.value = '';
+      photoLabel.textContent = 'La foto debe pesar menos de 10 MB';
+      return;
+    }
+    selectedPhoto = file;
+    photoLabel.textContent = 'Foto lista para subir';
   });
 
   function database() {
@@ -28,6 +39,30 @@
       tx.onerror = () => reject(tx.error);
     });
     db.close();
+  }
+
+  function optimizePhoto(file) {
+    return new Promise((resolve) => {
+      const image = new Image();
+      const sourceUrl = URL.createObjectURL(file);
+      image.onload = () => {
+        const longestSide = Math.max(image.width, image.height);
+        const scale = Math.min(1, 1600 / longestSide);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(sourceUrl);
+        canvas.toBlob((blob) => {
+          resolve(blob ? new File([blob], 'foto.jpg', { type: 'image/jpeg' }) : file);
+        }, 'image/jpeg', 0.82);
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(sourceUrl);
+        resolve(file);
+      };
+      image.src = sourceUrl;
+    });
   }
 
   async function persistProfile(profile, file) {
@@ -63,19 +98,20 @@
 
   window.saveAndGo = async () => {
     const alias = localStorage.getItem('soypobre-alias');
-    const file = photoInput.files[0] || null;
+    const file = selectedPhoto;
+    const button = document.querySelector('button[onclick]');
+    button.disabled = true;
+    button.textContent = 'GUARDANDO...';
+    const optimizedFile = file ? await optimizePhoto(file) : null;
     const profile = {
       alias: alias || null,
       name: document.getElementById('name').value.trim() || null,
       story: document.getElementById('story').value.trim() || null,
-      photoName: file?.name || null,
+      photoName: optimizedFile?.name || null,
     };
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
-    const button = document.querySelector('button[onclick]');
-    button.disabled = true;
-    button.textContent = 'GUARDANDO...';
-    try { await storePhoto(file); } catch (error) { console.error(error); }
-    try { await persistProfile(profile, file); } catch (error) { console.error(error); }
+    try { await storePhoto(optimizedFile); } catch (error) { console.error(error); }
+    try { await persistProfile(profile, optimizedFile); } catch (error) { console.error(error); }
     window.location.assign('../perfil/');
   };
 })();
