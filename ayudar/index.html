@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="https://induliru.com/soypobre/ayudar/" />
+    <meta name="description" content="Descubrí historias y registrá ayuda confirmada en Soy Pobre." />
+    <title>Ayudar · Soy Pobre</title>
+    <link rel="stylesheet" href="styles.css?v=1" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../" aria-label="Soy Pobre, inicio">P</a>
+      <nav aria-label="Navegación principal">
+        <a class="active" href="#explorar">Explorar</a>
+        <a href="#ranking">Ranking</a>
+        <a href="#impacto">Mi impacto</a>
+      </nav>
+      <button class="profile-button" type="button" aria-label="Abrir mi perfil">G</button>
+    </header>
+
+    <main>
+      <section class="intro" id="explorar" aria-labelledby="pageTitle">
+        <p class="kicker"><span></span> comunidad de ayuda directa</p>
+        <h1>Que ayudar<br /><em>se note.</em></h1>
+        <p class="intro-copy">Encontrá personas, transferí directo y convertí cada comprobante confirmado en impacto real.</p>
+        <div class="intro-actions">
+          <button class="primary-action" type="button" data-scroll="#stories">Ver historias <span>↓</span></button>
+          <button class="ghost-action" type="button" data-scroll="#howItWorks">Cómo funciona</button>
+        </div>
+        <div class="signal-card" aria-label="Resumen del impacto semanal">
+          <p>Esta semana</p>
+          <strong>+128</strong>
+          <span>personas recibieron una ayuda confirmada</span>
+          <i aria-hidden="true"></i>
+        </div>
+      </section>
+
+      <section class="filters" aria-label="Filtrar historias">
+        <button class="filter selected" type="button">Argentina <span>⌄</span></button>
+        <button class="filter" type="button">Buenos Aires <span>⌄</span></button>
+        <button class="filter" type="button">Todos los barrios <span>⌄</span></button>
+        <button class="filter icon-filter" type="button" aria-label="Más filtros">☷</button>
+      </section>
+
+      <section class="stories" id="stories" aria-labelledby="storiesTitle">
+        <div class="section-heading">
+          <div><p class="kicker">Historias cerca tuyo</p><h2 id="storiesTitle">Personas para <em>conocer.</em></h2></div>
+          <button class="text-action" type="button">Ver todas <span>↗</span></button>
+        </div>
+        <p class="demo-note">Vista previa de diseño. Las historias y montos reales se mostrarán sólo con autorización.</p>
+        <div class="story-grid">
+          <article class="story-card featured">
+            <div class="card-photo photo-one"><span>MS</span></div>
+            <div class="card-body"><p class="story-place">Palermo · CABA</p><h3>Marina necesita rearmar su taller.</h3><p>“Con herramientas puedo volver a trabajar esta semana.”</p><button type="button">Ver historia <span>↗</span></button></div>
+          </article>
+          <article class="story-card">
+            <div class="card-photo photo-two"><span>JP</span></div>
+            <div class="card-body"><p class="story-place">San Martín · GBA</p><h3>Juan busca sostener sus estudios.</h3><p>Meta inmediata: transporte y materiales.</p><button type="button">Ver historia <span>↗</span></button></div>
+          </article>
+          <article class="story-card">
+            <div class="card-photo photo-three"><span>LR</span></div>
+            <div class="card-body"><p class="story-place">Godoy Cruz · Mendoza</p><h3>Lucía quiere equipar su cocina.</h3><p>Hace viandas para sus vecinos.</p><button type="button">Ver historia <span>↗</span></button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="ranking" id="ranking" aria-labelledby="rankingTitle">
+        <div class="ranking-intro"><p class="kicker">Ranking verificable</p><h2 id="rankingTitle">El impacto<br />tiene <em>nombre.</em></h2><p>Sube quien ayuda a más personas diferentes. El monto acompaña, pero la constancia pesa.</p><a href="#howItWorks">Cómo se calcula <span>↗</span></a></div>
+        <div class="leaderboard">
+          <div class="rank-header"><span>Top donantes</span><button type="button">Este mes ⌄</button></div>
+          <ol>
+            <li class="leader first"><b>01</b><span class="donor-avatar coral">AL</span><strong>Alma L.</strong><small>18 personas</small><em>2.480 pts</em></li>
+            <li class="leader"><b>02</b><span class="donor-avatar blue">MR</span><strong>Marcos R.</strong><small>14 personas</small><em>1.920 pts</em></li>
+            <li class="leader"><b>03</b><span class="donor-avatar yellow">SC</span><strong>Sofía C.</strong><small>11 personas</small><em>1.540 pts</em></li>
+            <li class="leader"><b>04</b><span class="donor-avatar green">DM</span><strong>Diego M.</strong><small>9 personas</small><em>1.180 pts</em></li>
+          </ol>
+          <p class="ranking-foot">Sólo cuentan transferencias con comprobante y confirmación de quien la recibió.</p>
+        </div>
+      </section>
+
+      <section class="how" id="howItWorks" aria-labelledby="howTitle">
+        <p class="kicker">Simple y verificable</p><h2 id="howTitle">Ayudar no debería<br /><em>ser opaco.</em></h2>
+        <div class="steps">
+          <article><b>01</b><h3>Elegís una historia</h3><p>Conocés a la persona y transferís directamente a su alias.</p></article>
+          <article><b>02</b><h3>Subís el comprobante</h3><p>Indicás el monto y adjuntás el comprobante de la transferencia.</p></article>
+          <article><b>03</b><h3>Se confirma el impacto</h3><p>La persona confirma que recibió la ayuda y suma a tu impacto.</p></article>
+        </div>
+      </section>
+    </main>
+    <script src="app.js?v=1"></script>
+  </body>
+</html>
