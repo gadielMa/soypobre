@@ -41,6 +41,13 @@
     if (!client) return;
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user?.user_metadata?.soypobre_name) return;
+    if (profile?.name && session.user.user_metadata.soypobre_name !== profile.name) {
+      const { data, error } = await client.auth.updateUser({ data: { soypobre_name: profile.name } });
+      if (!error && data.user) {
+        showAccount(data.user);
+        return;
+      }
+    }
     showAccount(session.user);
   }
 
