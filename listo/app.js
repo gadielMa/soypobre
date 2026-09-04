@@ -1,3 +1,4 @@
+(() => {
 const supabase = window.supabase.createClient(
   'https://jbrjsvkdnyzptkxnflbe.supabase.co',
   'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1',
@@ -9,6 +10,7 @@ const photoLabel = document.getElementById('photo-label');
 photoInput.addEventListener('change', () => {
   photoLabel.textContent = photoInput.files[0]?.name || 'Elegir una foto';
 });
+})();
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();

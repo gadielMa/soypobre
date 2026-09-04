@@ -1,3 +1,4 @@
+(() => {
 const aliasInput = document.getElementById('alias');
 
 function fitAlias() {
@@ -26,3 +27,4 @@ document.getElementById('aliasForm').addEventListener('submit', async (event) =>
   localStorage.setItem('soypobre-alias', alias);
   window.location.href = '../listo/';
 });
+})();

@@ -1,3 +1,4 @@
+(() => {
 const profile = JSON.parse(localStorage.getItem('soypobre-profile') || 'null');
 const profileSection = document.getElementById('profile');
 const empty = document.getElementById('empty');
@@ -39,3 +40,4 @@ registerForm?.addEventListener('submit', async (event) => {
   const { error } = await supabase.auth.signUp({ email, password });
   status.textContent = error ? error.message : 'Revisá tu correo para confirmar el registro.';
 });
+})();
