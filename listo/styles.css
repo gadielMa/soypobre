@@ -23,6 +23,7 @@ button:active { transform: translate(-50%, 2px); box-shadow: 0 5px 0 var(--green
   h1 { margin-bottom: 10px; font-size: 36px; line-height: .95; overflow-wrap: anywhere; }
   label { font-size: 20px; line-height: 1.15; }
   input, textarea { width: 100%; min-width: 0; font-size: 24px; max-width: 100%; }
+  textarea { height: 96px; min-height: 96px; }
   .file-button { min-width: 0; font-size: 16px; }
   .file-button span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   button { width: calc(100% - 40px); max-width: 320px; bottom: 20px; font-size: 20px; }
