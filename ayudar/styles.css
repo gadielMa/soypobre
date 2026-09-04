@@ -19,7 +19,7 @@ h1, h2 { letter-spacing:-.075em; line-height:.86; }
 h1 { max-width:700px; margin-bottom:28px; font-size:clamp(70px,10vw,154px); }
 h1 em, h2 em { color:var(--green); font-style:normal; }
 .intro-copy { max-width:430px; margin-bottom:34px; color:#5d5752; font-size:18px; line-height:1.4; }
-.intro-actions { display:flex; gap:12px; }
+.intro-actions { position:relative; z-index:2; display:flex; gap:12px; }
 .primary-action, .ghost-action { border-radius:999px; padding:15px 20px; font-weight:700; }
 .primary-action { border:0; background:var(--ink); color:#fff; }.primary-action span { margin-left:16px; color:#b8ff51; }
 .ghost-action { border:1px solid var(--ink); background:transparent; color:var(--ink); }
