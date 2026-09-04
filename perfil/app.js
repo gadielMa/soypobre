@@ -169,9 +169,11 @@
   let editedPhoto = null;
   document.getElementById('editButton')?.addEventListener('click', () => {
     if (!profile) return;
+    document.getElementById('editAlias').value = profile.alias || '';
     document.getElementById('editName').value = profile.name || '';
     document.getElementById('editStory').value = profile.story || '';
     document.getElementById('editForm').hidden = false;
+    document.getElementById('profileDetails').hidden = true;
     document.getElementById('editButton').hidden = true;
   });
 
@@ -190,6 +192,7 @@
   document.getElementById('editForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!profile) return;
+    profile.alias = document.getElementById('editAlias').value.trim() || null;
     profile.name = document.getElementById('editName').value.trim() || null;
     profile.story = document.getElementById('editStory').value.trim() || null;
     if (editedPhoto) profile.photoName = editedPhoto.name;
@@ -214,6 +217,6 @@
 
   document.getElementById('signOutButton')?.addEventListener('click', async () => {
     await client?.auth.signOut();
-    window.location.reload();
+    window.location.assign('../nuevo/');
   });
 })();
