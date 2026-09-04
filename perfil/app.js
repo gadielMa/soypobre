@@ -14,6 +14,17 @@ if (profile?.alias) {
   else document.getElementById('photoRow').hidden = true;
 }
 
+if (profile?.alias && localStorage.getItem('soypobre-pending-profile') === 'true') {
+  const supabase = window.supabase.createClient(
+    'https://jbrjsvkdnyzptkxnflbe.supabase.co',
+    'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1',
+  );
+  supabase.from('soypobre_requests').insert({ alias: profile.alias, name: profile.name || null, story: profile.story || null }).then(({ error }) => {
+    if (!error) localStorage.removeItem('soypobre-pending-profile');
+    else console.error(error);
+  });
+}
+
 const registerForm = document.getElementById('registerForm');
 registerForm?.addEventListener('submit', async (event) => {
   event.preventDefault();

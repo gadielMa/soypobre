@@ -18,15 +18,8 @@ form.addEventListener('submit', async (event) => {
   const file = document.getElementById('photo').files[0];
   if (!alias) return window.location.href = '../nuevo/';
   if (file && file.size > 5 * 1024 * 1024) return;
-  let photoPath = null;
-  if (file) {
-    photoPath = `${crypto.randomUUID()}-${file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-')}`;
-    const upload = await supabase.storage.from('soypobre-images').upload(photoPath, file, { contentType: file.type });
-    if (upload.error) { console.error(upload.error); photoPath = null; }
-  }
-  const result = await supabase.from('soypobre_requests').insert({ alias, name, story, photo_path: photoPath });
-  if (result.error) console.error(result.error);
   localStorage.setItem('soypobre-profile', JSON.stringify({ alias, name, story, photoName: file?.name || null }));
+  localStorage.setItem('soypobre-pending-profile', 'true');
   localStorage.removeItem('soypobre-alias');
   window.location.href = '../perfil/';
 });
