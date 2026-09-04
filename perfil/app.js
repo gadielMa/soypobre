@@ -32,8 +32,7 @@
     title.innerHTML = existingEmail
       ? 'Este email ya se encuentra registrado.'
       : 'Revisá<br /><span>tu email.</span>';
-    close.textContent = existingEmail ? 'INICIAR SESIÓN' : 'ENTENDIDO';
-    close.dataset.next = existingEmail ? 'login' : 'close';
+    close.textContent = 'INICIAR SESIÓN';
     notice.classList.toggle('existing-email', existingEmail);
     notice.hidden = false;
   }
@@ -150,22 +149,52 @@
   });
 
   document.getElementById('closeNotice')?.addEventListener('click', () => {
-    if (document.getElementById('closeNotice').dataset.next === 'login') {
-      window.location.assign('../ingresar/');
-      return;
-    }
-    document.getElementById('registrationNotice').hidden = true;
+    window.location.assign('../ingresar/');
   });
 
   let editedPhoto = null;
+  let editing = false;
+  const editableFields = [
+    ['profileAlias', 'Escribí tu alias'],
+    ['profileName', 'Escribí tu nombre'],
+    ['profileStory', 'Contanos de vos'],
+  ];
+
+  function showPhotoEditor(text = 'Agregar una foto') {
+    const photoRow = document.getElementById('photoRow');
+    const photo = document.getElementById('profilePhoto');
+    photoRow.hidden = false;
+    const label = document.createElement('label');
+    label.className = 'edit-photo';
+    label.htmlFor = 'editPhoto';
+    label.innerHTML = `<span>${text}</span><strong>+</strong>`;
+    photo.replaceChildren(label);
+  }
+
   document.getElementById('editButton')?.addEventListener('click', () => {
     if (!profile) return;
-    document.getElementById('editAlias').value = profile.alias || '';
-    document.getElementById('editName').value = profile.name || '';
-    document.getElementById('editStory').value = profile.story || '';
-    document.getElementById('editForm').hidden = false;
-    document.getElementById('profileDetails').hidden = true;
-    document.getElementById('editButton').hidden = true;
+    if (!editing) {
+      editing = true;
+      profileSection.classList.add('is-editing');
+      document.getElementById('nameRow').hidden = false;
+      document.getElementById('storyRow').hidden = false;
+      editableFields.forEach(([id, placeholder]) => {
+        const field = document.getElementById(id);
+        field.contentEditable = 'true';
+        field.dataset.placeholder = placeholder;
+        if (field.textContent === 'No informado') field.textContent = '';
+      });
+      showPhotoEditor(profile.photoName ? 'Cambiar foto' : 'Agregar una foto');
+      document.getElementById('editButton').textContent = 'GUARDAR CAMBIOS';
+      return;
+    }
+    profile.alias = document.getElementById('profileAlias').textContent.trim() || null;
+    profile.name = document.getElementById('profileName').textContent.trim() || null;
+    profile.story = document.getElementById('profileStory').textContent.trim() || null;
+    if (editedPhoto) profile.photoName = editedPhoto.name;
+    localStorage.setItem('soypobre-profile', JSON.stringify(profile));
+    if (editedPhoto) storePhoto(editedPhoto).catch(console.error);
+    window.location.reload();
   });
 
   document.getElementById('editPhoto')?.addEventListener('change', (event) => {
@@ -173,23 +202,11 @@
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
       event.target.value = '';
-      document.getElementById('editPhotoLabel').textContent = 'La foto debe pesar menos de 10 MB';
+      showPhotoEditor('La foto debe pesar menos de 10 MB');
       return;
     }
     editedPhoto = file;
-    document.getElementById('editPhotoLabel').textContent = 'Foto lista para guardar';
-  });
-
-  document.getElementById('editForm')?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    if (!profile) return;
-    profile.alias = document.getElementById('editAlias').value.trim() || null;
-    profile.name = document.getElementById('editName').value.trim() || null;
-    profile.story = document.getElementById('editStory').value.trim() || null;
-    if (editedPhoto) profile.photoName = editedPhoto.name;
-    localStorage.setItem('soypobre-profile', JSON.stringify(profile));
-    if (editedPhoto) await storePhoto(editedPhoto);
-    window.location.reload();
+    showPhotoEditor('Foto lista para guardar');
   });
 
   document.getElementById('accountButton')?.addEventListener('click', () => {

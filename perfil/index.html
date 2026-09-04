@@ -28,18 +28,8 @@
           <div id="storyRow"><dt>Historia</dt><dd id="profileStory"></dd></div>
           <div id="photoRow"><dt>Foto</dt><dd id="profilePhoto"></dd></div>
         </dl>
+        <input id="editPhoto" type="file" accept="image/jpeg,image/png,image/webp" hidden />
         <button id="editButton" class="edit-button" type="button">EDITAR DATOS</button>
-        <form id="editForm" class="edit-form" hidden>
-          <label for="editAlias">Alias</label>
-          <input id="editAlias" type="text" maxlength="50" autocomplete="nickname" />
-          <label for="editName">Nombre</label>
-          <input id="editName" type="text" maxlength="100" autocomplete="name" />
-          <input id="editPhoto" type="file" accept="image/jpeg,image/png,image/webp" hidden />
-          <label class="edit-photo" for="editPhoto"><span id="editPhotoLabel">Agregar una foto</span><strong>+</strong></label>
-          <label for="editStory">Historia</label>
-          <textarea id="editStory" maxlength="1000" rows="4"></textarea>
-          <button type="submit">GUARDAR CAMBIOS</button>
-        </form>
         <section class="register">
           <p class="register-question">¿Querés registrarte?</p>
           <form id="registerForm">
@@ -64,6 +54,6 @@
         <button id="closeNotice" type="button">ENTENDIDO</button>
       </div>
     </section>
-    <script src="app.js?v=16"></script>
+    <script src="app.js?v=17"></script>
   </body>
 </html>

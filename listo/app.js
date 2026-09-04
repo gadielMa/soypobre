@@ -96,6 +96,13 @@
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 
+  function withTimeout(promise, milliseconds) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de guardado agotado')), milliseconds)),
+    ]);
+  }
+
   window.saveAndGo = async () => {
     const alias = localStorage.getItem('soypobre-alias');
     const file = selectedPhoto;
@@ -111,7 +118,7 @@
     };
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
     try { await storePhoto(optimizedFile); } catch (error) { console.error(error); }
-    try { await persistProfile(profile, optimizedFile); } catch (error) { console.error(error); }
+    try { await withTimeout(persistProfile(profile, optimizedFile), 3000); } catch (error) { console.error(error); }
     window.location.assign('../perfil/');
   };
 })();
