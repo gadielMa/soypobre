@@ -20,7 +20,7 @@ button:active { transform: translate(-50%, 2px); box-shadow: 0 5px 0 var(--green
 @media (max-width: 600px) {
   main { padding: 32px 20px; }
   form { width: 100%; }
-  h1 { margin-bottom: 32px; font-size: 42px; line-height: .98; overflow-wrap: anywhere; }
+  h1 { margin-bottom: 32px; font-size: 52px; line-height: .95; overflow-wrap: anywhere; }
   label { font-size: 20px; line-height: 1.15; }
   input, textarea { font-size: 24px; max-width: 100%; }
   button { width: calc(100% - 40px); max-width: 320px; bottom: 20px; font-size: 20px; }
