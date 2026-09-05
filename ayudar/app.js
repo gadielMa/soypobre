@@ -5,7 +5,9 @@
   const grid = document.getElementById('storyGrid');
   const status = document.getElementById('feedStatus');
   const dialog = document.getElementById('donationDialog');
+  const donorProfileDialog = document.getElementById('donorProfileDialog');
   let selectedProfile = null;
+  let currentUser = null;
 
   const escape = (value = '') => String(value).replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
   const initials = (name = 'P') => name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
@@ -13,6 +15,7 @@
 
   async function invoke(name, options = {}) {
     const { data: { session } } = await client.auth.getSession();
+    currentUser = session?.user || currentUser;
     const response = await fetch(`${url}/functions/v1/${name}${options.query || ''}`, {
       method: options.method || 'GET',
       headers: { apikey: key, Authorization: `Bearer ${session?.access_token || ''}`, 'Content-Type': 'application/json' },
@@ -66,9 +69,45 @@
     } catch { /* The feed remains usable even if the optional summary is unavailable. */ }
   }
 
+  async function setupAccount() {
+    const { data: { session } } = await client.auth.getSession();
+    currentUser = session?.user || null;
+    if (!currentUser) return;
+    const metadata = currentUser.user_metadata || {};
+    document.getElementById('donorAccount').hidden = false;
+    document.getElementById('accountName').textContent = metadata.soypobre_donor_name || currentUser.email;
+    document.getElementById('accountButton').textContent = initials(metadata.soypobre_donor_name || 'P');
+    document.getElementById('donorName').value = metadata.soypobre_donor_name || '';
+    document.getElementById('donorCountry').value = metadata.soypobre_donor_country || 'Argentina';
+    document.getElementById('donorProvince').value = metadata.soypobre_donor_province || '';
+    document.getElementById('donorLocality').value = metadata.soypobre_donor_locality || '';
+  }
+
   document.querySelectorAll('[data-scroll]').forEach((button) => button.addEventListener('click', () => document.querySelector(button.dataset.scroll)?.scrollIntoView({ behavior: 'smooth' })));
   ['feedCountry', 'feedProvince', 'feedLocality'].forEach((id) => document.getElementById(id).addEventListener('change', loadProfiles));
   dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
+  donorProfileDialog.querySelector('.dialog-close').addEventListener('click', () => donorProfileDialog.close());
+  document.getElementById('accountButton').addEventListener('click', () => {
+    const menu = document.getElementById('accountMenu');
+    menu.hidden = !menu.hidden;
+  });
+  document.getElementById('editDonorButton').addEventListener('click', () => { document.getElementById('accountMenu').hidden = true; donorProfileDialog.showModal(); });
+  document.getElementById('logoutDonorButton').addEventListener('click', async () => { await client.auth.signOut(); window.location.assign('/soypobre/ayudar/ingresar/'); });
+  document.getElementById('donorProfileForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const status = document.getElementById('donorProfileStatus');
+    const button = event.currentTarget.querySelector('[type="submit"]');
+    button.disabled = true;
+    try {
+      await invoke('soypobre-donor-profile', { method: 'POST', body: { name: document.getElementById('donorName').value, country: document.getElementById('donorCountry').value, province: document.getElementById('donorProvince').value, locality: document.getElementById('donorLocality').value } });
+      await client.auth.refreshSession();
+      await setupAccount();
+      status.style.color = '#315f45';
+      status.textContent = 'Datos guardados.';
+      await loadRanking();
+    } catch (error) { status.textContent = error.message; }
+    finally { button.disabled = false; }
+  });
   document.getElementById('donationForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     const receipt = document.getElementById('donationReceipt').files[0];
@@ -87,6 +126,7 @@
     finally { button.disabled = false; button.textContent = 'REGISTRAR DONACIÓN'; }
   });
 
+  setupAccount();
   loadProfiles();
   loadRanking();
 })();
