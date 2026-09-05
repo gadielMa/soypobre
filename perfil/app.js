@@ -57,24 +57,39 @@
     if (!profile?.alias || !client || !user) return;
     let photoUrl = profile.photoUrl || null;
     let photoPublicId = profile.photoPublicId || null;
+    let photoPath = profile.photoPath || null;
     if (photoToUpload) {
-      if (!window.soyPobreCloudinary) throw new Error('El servicio de imágenes no está disponible.');
-      const uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(photoToUpload);
-      photoUrl = uploadedPhoto.url;
-      photoPublicId = uploadedPhoto.publicId;
+      try {
+        if (!window.soyPobreCloudinary) throw new Error('Cloudinary no está disponible.');
+        const uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(photoToUpload);
+        photoUrl = uploadedPhoto.url;
+        photoPublicId = uploadedPhoto.publicId;
+        photoPath = null;
+      } catch (cloudinaryError) {
+        const safeName = photoToUpload.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+        photoPath = `${user.id}/${crypto.randomUUID()}-${safeName}`;
+        const { error } = await client.storage.from('soypobre-images').upload(photoPath, photoToUpload, { contentType: photoToUpload.type, upsert: false });
+        if (error) throw cloudinaryError;
+        photoUrl = null;
+        photoPublicId = null;
+      }
     }
     const { error } = await client.from('soypobre_requests').upsert({
       user_id: user.id,
       alias: profile.alias,
       name: profile.name,
       story: profile.story,
-      photo_path: null,
+      photo_path: photoPath,
       photo_url: photoUrl,
       photo_public_id: photoPublicId,
+      country: profile.country || 'Argentina',
+      province: profile.province || null,
+      locality: profile.locality || null,
     }, { onConflict: 'user_id' });
     if (error) throw error;
     profile.photoUrl = photoUrl;
     profile.photoPublicId = photoPublicId;
+    profile.photoPath = photoPath;
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 
@@ -82,7 +97,7 @@
     if (!client || !user) return;
     const { data, error } = await client
       .from('soypobre_requests')
-      .select('alias, name, story, photo_url, photo_public_id')
+      .select('alias, name, story, photo_path, photo_url, photo_public_id, country, province, locality')
       .eq('user_id', user.id)
       .maybeSingle();
     if (error || !data) return;
@@ -93,6 +108,10 @@
       story: data.story,
       photoUrl: data.photo_url,
       photoPublicId: data.photo_public_id,
+      photoPath: data.photo_path,
+      country: data.country,
+      province: data.province,
+      locality: data.locality,
     };
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
     renderProfile();

@@ -38,10 +38,9 @@
       </section>
 
       <section class="filters" aria-label="Filtrar historias">
-        <button class="filter selected" type="button">Argentina <span>⌄</span></button>
-        <button class="filter" type="button">Buenos Aires <span>⌄</span></button>
-        <button class="filter" type="button">Todos los barrios <span>⌄</span></button>
-        <button class="filter icon-filter" type="button" aria-label="Más filtros">☷</button>
+        <label class="filter selected">País <select id="feedCountry"><option>Argentina</option></select></label>
+        <label class="filter">Provincia <input id="feedProvince" placeholder="Todas" /></label>
+        <label class="filter">Barrio / localidad <input id="feedLocality" placeholder="Todos" /></label>
       </section>
 
       <section class="stories" id="stories" aria-labelledby="storiesTitle">
@@ -49,34 +48,16 @@
           <div><p class="kicker">Historias cerca tuyo</p><h2 id="storiesTitle">Personas para <em>conocer.</em></h2></div>
           <button class="text-action" type="button">Ver todas <span>↗</span></button>
         </div>
-        <p class="demo-note">Vista previa de diseño. Las historias y montos reales se mostrarán sólo con autorización.</p>
-        <div class="story-grid">
-          <article class="story-card featured">
-            <div class="card-photo photo-one"><span>MS</span></div>
-            <div class="card-body"><p class="story-place">Palermo · CABA</p><h3>Marina necesita rearmar su taller.</h3><p>“Con herramientas puedo volver a trabajar esta semana.”</p><button type="button">Ver historia <span>↗</span></button></div>
-          </article>
-          <article class="story-card">
-            <div class="card-photo photo-two"><span>JP</span></div>
-            <div class="card-body"><p class="story-place">San Martín · GBA</p><h3>Juan busca sostener sus estudios.</h3><p>Meta inmediata: transporte y materiales.</p><button type="button">Ver historia <span>↗</span></button></div>
-          </article>
-          <article class="story-card">
-            <div class="card-photo photo-three"><span>LR</span></div>
-            <div class="card-body"><p class="story-place">Godoy Cruz · Mendoza</p><h3>Lucía quiere equipar su cocina.</h3><p>Hace viandas para sus vecinos.</p><button type="button">Ver historia <span>↗</span></button></div>
-          </article>
-        </div>
+        <p class="demo-note" id="feedStatus">Cargando historias reales…</p>
+        <div class="story-grid" id="storyGrid"></div>
       </section>
 
       <section class="ranking" id="ranking" aria-labelledby="rankingTitle">
         <div class="ranking-intro"><p class="kicker">Ranking verificable</p><h2 id="rankingTitle">El impacto<br />tiene <em>nombre.</em></h2><p>Sube quien ayuda a más personas diferentes. El monto acompaña, pero la constancia pesa.</p><a href="ranking/">Ver ranking completo <span>↗</span></a></div>
         <div class="leaderboard">
           <div class="rank-header"><span>Top donantes</span><button type="button">Este mes ⌄</button></div>
-          <ol>
-            <li class="leader first"><b>01</b><span class="donor-avatar coral">AL</span><strong>Alma L.</strong><small>18 personas</small><em>2.480 pts</em></li>
-            <li class="leader"><b>02</b><span class="donor-avatar blue">MR</span><strong>Marcos R.</strong><small>14 personas</small><em>1.920 pts</em></li>
-            <li class="leader"><b>03</b><span class="donor-avatar yellow">SC</span><strong>Sofía C.</strong><small>11 personas</small><em>1.540 pts</em></li>
-            <li class="leader"><b>04</b><span class="donor-avatar green">DM</span><strong>Diego M.</strong><small>9 personas</small><em>1.180 pts</em></li>
-          </ol>
-          <p class="ranking-foot">Sólo cuentan transferencias con comprobante y confirmación de quien la recibió.</p>
+          <ol id="rankingList"></ol>
+          <p class="ranking-foot">Cuenta desde el momento en que el donante carga monto y comprobante.</p>
         </div>
       </section>
 
@@ -89,7 +70,9 @@
         </div>
       </section>
     </main>
-    <script src="auth.js?v=1"></script>
-    <script src="app.js?v=1"></script>
+    <dialog id="donationDialog" class="donation-dialog"><form id="donationForm"><button class="dialog-close" type="button" aria-label="Cerrar">×</button><p class="kicker">Transferencia directa</p><h2 id="donationName"></h2><p id="donationPayment"></p><a id="copyAlias" target="_blank" rel="noreferrer">Copiar / abrir alias</a><label>Monto transferido<input id="donationAmount" type="number" min="1" step="1" required /></label><label>Comprobante<input id="donationReceipt" type="file" accept="image/jpeg,image/png,image/webp" required /></label><button type="submit">REGISTRAR DONACIÓN</button><p id="donationStatus" role="status"></p></form></dialog>
+    <script src="../cloudinary.js?v=1"></script>
+    <script src="auth.js?v=2"></script>
+    <script src="app.js?v=2"></script>
   </body>
 </html>

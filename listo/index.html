@@ -18,6 +18,13 @@
         <label for="name">¿Querés decirnos tu nombre?</label>
         <input id="name" name="name" type="text" maxlength="100" autocomplete="name" />
 
+        <label for="country">¿En qué país estás?</label>
+        <input id="country" name="country" value="Argentina" maxlength="80" required />
+        <label for="province">Provincia</label>
+        <input id="province" name="province" maxlength="100" required />
+        <label for="locality">Barrio / localidad</label>
+        <input id="locality" name="locality" maxlength="100" required />
+
         <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
         <label class="file-button" for="photo"><span id="photo-label">¿Querés subir una foto tuya?</span><strong>+</strong></label>
 

@@ -34,18 +34,26 @@ form.addEventListener('submit', async (event) => {
   submitButton.disabled = true;
   submitButton.firstChild.textContent = 'Guardando... ';
   let uploadedPhoto = null;
+  let legacyPhotoPath = null;
   try {
     if (!window.supabase) throw new Error('Supabase no está disponible');
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     if (file) {
-      if (!window.soyPobreCloudinary) throw new Error('El servicio de imágenes no está disponible');
-      uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(file);
+      try {
+        if (!window.soyPobreCloudinary) throw new Error('Cloudinary no está disponible');
+        uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(file);
+      } catch (cloudinaryError) {
+        const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+        legacyPhotoPath = `${crypto.randomUUID()}-${safeName}`;
+        const upload = await supabase.storage.from('soypobre-images').upload(legacyPhotoPath, file, { contentType: file.type, upsert: false });
+        if (upload.error) throw cloudinaryError;
+      }
     }
     const insert = await supabase.from(TABLE).insert({
       cbu: cbu || null,
       alias: alias || null,
       story: story.value.trim() || null,
-      photo_path: null,
+      photo_path: legacyPhotoPath,
       photo_url: uploadedPhoto?.url || null,
       photo_public_id: uploadedPhoto?.publicId || null,
     });

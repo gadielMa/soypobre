@@ -73,23 +73,35 @@
       'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1'
     );
     let uploadedPhoto = null;
+    let legacyPhotoPath = null;
 
     if (file) {
-      if (!window.soyPobreCloudinary) throw new Error('El servicio de imágenes no está disponible.');
-      uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(file);
+      try {
+        if (!window.soyPobreCloudinary) throw new Error('Cloudinary no está disponible.');
+        uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(file);
+      } catch (cloudinaryError) {
+        const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+        legacyPhotoPath = `${crypto.randomUUID()}-${safeName}`;
+        const { error } = await client.storage.from('soypobre-images').upload(legacyPhotoPath, file, { contentType: file.type, upsert: false });
+        if (error) throw cloudinaryError;
+      }
     }
 
     const { error } = await client.from('soypobre_requests').insert({
       alias: profile.alias,
       name: profile.name,
       story: profile.story,
-      photo_path: null,
+      photo_path: legacyPhotoPath,
       photo_url: uploadedPhoto?.url || null,
       photo_public_id: uploadedPhoto?.publicId || null,
+      country: profile.country,
+      province: profile.province,
+      locality: profile.locality,
     });
     if (error) throw error;
     profile.photoUrl = uploadedPhoto?.url || null;
     profile.photoPublicId = uploadedPhoto?.publicId || null;
+    profile.photoPath = legacyPhotoPath;
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 
@@ -105,6 +117,9 @@
     const profile = {
       alias: alias || null,
       name: document.getElementById('name').value.trim() || null,
+      country: document.getElementById('country').value.trim() || 'Argentina',
+      province: document.getElementById('province').value.trim() || null,
+      locality: document.getElementById('locality').value.trim() || null,
       story: document.getElementById('story').value.trim() || null,
       photoName: optimizedFile?.name || null,
     };
