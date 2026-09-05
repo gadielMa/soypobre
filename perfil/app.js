@@ -8,6 +8,7 @@
     'https://jbrjsvkdnyzptkxnflbe.supabase.co',
     'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1'
   );
+  let currentUser = null;
 
   function showAccount(user) {
     const name = user.user_metadata?.soypobre_name || profile?.name || user.email;
@@ -37,14 +38,44 @@
     if (!client) return;
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user?.user_metadata?.soypobre_name) return;
+    currentUser = session.user;
     if (profile?.name && session.user.user_metadata.soypobre_name !== profile.name) {
       const { data, error } = await client.auth.updateUser({ data: { soypobre_name: profile.name } });
       if (!error && data.user) {
+        currentUser = data.user;
         showAccount(data.user);
+        await syncProfileToDatabase(data.user);
         return;
       }
     }
     showAccount(session.user);
+    await syncProfileToDatabase(session.user);
+  }
+
+  function photoFileName(file) {
+    return file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+  }
+
+  async function syncProfileToDatabase(user, photoToUpload = null) {
+    if (!profile?.alias || !client || !user) return;
+    let photoPath = profile.photoPath || null;
+    if (photoToUpload) {
+      photoPath = `${user.id}/${crypto.randomUUID()}-${photoFileName(photoToUpload)}`;
+      const { error: uploadError } = await client.storage
+        .from('soypobre-images')
+        .upload(photoPath, photoToUpload, { contentType: photoToUpload.type, upsert: false });
+      if (uploadError) throw uploadError;
+    }
+    const { error } = await client.from('soypobre_requests').upsert({
+      user_id: user.id,
+      alias: profile.alias,
+      name: profile.name,
+      story: profile.story,
+      photo_path: photoPath,
+    }, { onConflict: 'user_id' });
+    if (error) throw error;
+    profile.photoPath = photoPath;
+    localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 
   function database() {
@@ -110,7 +141,11 @@
 
   refreshAccount().catch(console.error);
   client?.auth.onAuthStateChange((_event, session) => {
-    if (session?.user?.user_metadata?.soypobre_name) showAccount(session.user);
+    if (session?.user?.user_metadata?.soypobre_name) {
+      currentUser = session.user;
+      showAccount(session.user);
+      syncProfileToDatabase(session.user).catch(console.error);
+    }
   });
 
   document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
@@ -174,7 +209,7 @@
     photo.replaceChildren(label);
   }
 
-  document.getElementById('editButton')?.addEventListener('click', () => {
+  document.getElementById('editButton')?.addEventListener('click', async () => {
     if (!profile) return;
     if (!editing) {
       editing = true;
@@ -191,13 +226,23 @@
       document.getElementById('editButton').textContent = 'GUARDAR CAMBIOS';
       return;
     }
+    const button = document.getElementById('editButton');
     profile.alias = document.getElementById('profileAlias').textContent.trim() || null;
     profile.name = document.getElementById('profileName').textContent.trim() || null;
     profile.story = document.getElementById('profileStory').textContent.trim() || null;
     if (editedPhoto) profile.photoName = editedPhoto.name;
-    localStorage.setItem('soypobre-profile', JSON.stringify(profile));
-    if (editedPhoto) storePhoto(editedPhoto).catch(console.error);
-    window.location.reload();
+    button.disabled = true;
+    button.textContent = 'GUARDANDO...';
+    try {
+      if (!currentUser) throw new Error('Iniciá sesión para guardar tus cambios.');
+      await syncProfileToDatabase(currentUser, editedPhoto);
+      if (editedPhoto) await storePhoto(editedPhoto);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      button.disabled = false;
+      button.textContent = error.message || 'NO PUDIMOS GUARDAR';
+    }
   });
 
   document.getElementById('editPhoto')?.addEventListener('change', (event) => {

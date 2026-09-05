@@ -79,10 +79,7 @@
       const { error } = await client.storage
         .from('soypobre-images')
         .upload(photoPath, file, { contentType: file.type });
-      if (error) {
-        console.error(error);
-        photoPath = null;
-      }
+      if (error) throw error;
     }
 
     const { error } = await client.from('soypobre_requests').insert({
@@ -96,19 +93,14 @@
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 
-  function withTimeout(promise, milliseconds) {
-    return Promise.race([
-      promise,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de guardado agotado')), milliseconds)),
-    ]);
-  }
-
   window.saveAndGo = async () => {
     const alias = localStorage.getItem('soypobre-alias');
     const file = selectedPhoto;
     const button = document.querySelector('button[onclick]');
+    const status = document.getElementById('save-status');
     button.disabled = true;
     button.textContent = 'GUARDANDO...';
+    status.textContent = '';
     const optimizedFile = file ? await optimizePhoto(file) : null;
     const profile = {
       alias: alias || null,
@@ -118,7 +110,14 @@
     };
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
     try { await storePhoto(optimizedFile); } catch (error) { console.error(error); }
-    try { await withTimeout(persistProfile(profile, optimizedFile), 3000); } catch (error) { console.error(error); }
-    window.location.assign('../perfil/');
+    try {
+      await persistProfile(profile, optimizedFile);
+      window.location.assign('../perfil/');
+    } catch (error) {
+      console.error(error);
+      status.textContent = 'No pudimos guardar tus datos. Revisá tu conexión e intentá de nuevo.';
+      button.disabled = false;
+      button.textContent = 'GUARDAR';
+    }
   };
 })();
