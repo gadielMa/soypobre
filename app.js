@@ -1,7 +1,6 @@
 const SUPABASE_URL = 'https://jbrjsvkdnyzptkxnflbe.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1';
 const TABLE = 'soypobre_requests';
-const BUCKET = 'soypobre-images';
 
 const home = document.getElementById('home');
 const formSection = document.getElementById('formSection');
@@ -34,24 +33,28 @@ form.addEventListener('submit', async (event) => {
   if (!document.getElementById('consent').checked) return setError('Necesitamos tu consentimiento para guardar estos datos.');
   submitButton.disabled = true;
   submitButton.firstChild.textContent = 'Guardando... ';
-  let photoPath = null;
+  let uploadedPhoto = null;
   try {
     if (!window.supabase) throw new Error('Supabase no está disponible');
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     if (file) {
-      const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
-      photoPath = `${crypto.randomUUID()}-${safeName}`;
-      const upload = await supabase.storage.from(BUCKET).upload(photoPath, file, { contentType: file.type, upsert: false });
-      if (upload.error) throw upload.error;
+      if (!window.soyPobreCloudinary) throw new Error('El servicio de imágenes no está disponible');
+      uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(file);
     }
-    const insert = await supabase.from(TABLE).insert({ cbu: cbu || null, alias: alias || null, story: story.value.trim() || null, photo_path: photoPath });
+    const insert = await supabase.from(TABLE).insert({
+      cbu: cbu || null,
+      alias: alias || null,
+      story: story.value.trim() || null,
+      photo_path: null,
+      photo_url: uploadedPhoto?.url || null,
+      photo_public_id: uploadedPhoto?.publicId || null,
+    });
     if (insert.error) throw insert.error;
     form.reset();
     document.getElementById('fileLabel').textContent = 'Elegir una foto';
     document.getElementById('storyCount').textContent = '0';
     show('home');
   } catch (error) {
-    if (file && error && photoPath) await supabase.storage.from(BUCKET).remove([photoPath]);
     setError('No pudimos guardar tu historia. Probá de nuevo en unos segundos.');
     console.error(error);
   } finally {

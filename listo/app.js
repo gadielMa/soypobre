@@ -72,24 +72,24 @@
       'https://jbrjsvkdnyzptkxnflbe.supabase.co',
       'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1'
     );
-    let photoPath = null;
+    let uploadedPhoto = null;
 
     if (file) {
-      photoPath = `${crypto.randomUUID()}-${file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-')}`;
-      const { error } = await client.storage
-        .from('soypobre-images')
-        .upload(photoPath, file, { contentType: file.type });
-      if (error) throw error;
+      if (!window.soyPobreCloudinary) throw new Error('El servicio de imágenes no está disponible.');
+      uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(file);
     }
 
     const { error } = await client.from('soypobre_requests').insert({
       alias: profile.alias,
       name: profile.name,
       story: profile.story,
-      photo_path: photoPath,
+      photo_path: null,
+      photo_url: uploadedPhoto?.url || null,
+      photo_public_id: uploadedPhoto?.publicId || null,
     });
     if (error) throw error;
-    profile.photoPath = photoPath;
+    profile.photoUrl = uploadedPhoto?.url || null;
+    profile.photoPublicId = uploadedPhoto?.publicId || null;
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 

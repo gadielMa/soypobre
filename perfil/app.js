@@ -1,5 +1,5 @@
 (() => {
-  const profile = JSON.parse(localStorage.getItem('soypobre-profile') || 'null');
+  let profile = JSON.parse(localStorage.getItem('soypobre-profile') || 'null');
   const profileSection = document.getElementById('profile');
   const empty = document.getElementById('empty');
   const DB_NAME = 'soypobre';
@@ -39,6 +39,7 @@
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user?.user_metadata?.soypobre_name) return;
     currentUser = session.user;
+    await loadRemoteProfile(session.user);
     if (profile?.name && session.user.user_metadata.soypobre_name !== profile.name) {
       const { data, error } = await client.auth.updateUser({ data: { soypobre_name: profile.name } });
       if (!error && data.user) {
@@ -52,30 +53,49 @@
     await syncProfileToDatabase(session.user);
   }
 
-  function photoFileName(file) {
-    return file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
-  }
-
   async function syncProfileToDatabase(user, photoToUpload = null) {
     if (!profile?.alias || !client || !user) return;
-    let photoPath = profile.photoPath || null;
+    let photoUrl = profile.photoUrl || null;
+    let photoPublicId = profile.photoPublicId || null;
     if (photoToUpload) {
-      photoPath = `${user.id}/${crypto.randomUUID()}-${photoFileName(photoToUpload)}`;
-      const { error: uploadError } = await client.storage
-        .from('soypobre-images')
-        .upload(photoPath, photoToUpload, { contentType: photoToUpload.type, upsert: false });
-      if (uploadError) throw uploadError;
+      if (!window.soyPobreCloudinary) throw new Error('El servicio de imágenes no está disponible.');
+      const uploadedPhoto = await window.soyPobreCloudinary.uploadProfileImage(photoToUpload);
+      photoUrl = uploadedPhoto.url;
+      photoPublicId = uploadedPhoto.publicId;
     }
     const { error } = await client.from('soypobre_requests').upsert({
       user_id: user.id,
       alias: profile.alias,
       name: profile.name,
       story: profile.story,
-      photo_path: photoPath,
+      photo_path: null,
+      photo_url: photoUrl,
+      photo_public_id: photoPublicId,
     }, { onConflict: 'user_id' });
     if (error) throw error;
-    profile.photoPath = photoPath;
+    profile.photoUrl = photoUrl;
+    profile.photoPublicId = photoPublicId;
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
+  }
+
+  async function loadRemoteProfile(user) {
+    if (!client || !user) return;
+    const { data, error } = await client
+      .from('soypobre_requests')
+      .select('alias, name, story, photo_url, photo_public_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (error || !data) return;
+    profile = {
+      ...(profile || {}),
+      alias: data.alias,
+      name: data.name,
+      story: data.story,
+      photoUrl: data.photo_url,
+      photoPublicId: data.photo_public_id,
+    };
+    localStorage.setItem('soypobre-profile', JSON.stringify(profile));
+    renderProfile();
   }
 
   function database() {
@@ -117,7 +137,8 @@
     return row;
   }
 
-  if (profile) {
+  function renderProfile() {
+    if (!profile) return;
     profileSection.hidden = false;
     empty.hidden = true;
     document.getElementById('profileAlias').textContent = profile.alias || 'No informado';
@@ -125,8 +146,14 @@
     showValue('nameRow', profile.name);
     if (profile.story) document.getElementById('profileStory').textContent = profile.story;
     showValue('storyRow', profile.story);
-    const photoRow = showValue('photoRow', profile.photoName);
-    if (profile.photoName) document.getElementById('profilePhoto').textContent = profile.photoName;
+    const photoRow = showValue('photoRow', profile.photoName || profile.photoUrl);
+    if (profile.photoUrl) {
+      const image = document.createElement('img');
+      image.src = profile.photoUrl;
+      image.alt = 'Foto cargada';
+      image.className = 'profile-image';
+      document.getElementById('profilePhoto').replaceChildren(image);
+    } else if (profile.photoName) document.getElementById('profilePhoto').textContent = profile.photoName;
     getPhoto().then((file) => {
       if (file && photoRow) {
         photoRow.hidden = false;
@@ -138,6 +165,8 @@
       }
     }).catch(console.error);
   }
+
+  renderProfile();
 
   refreshAccount().catch(console.error);
   client?.auth.onAuthStateChange((_event, session) => {
