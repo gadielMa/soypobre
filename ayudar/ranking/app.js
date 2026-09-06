@@ -12,6 +12,16 @@
   const initials = (name) => name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
   const escape = (value = '') => String(value).replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 
+  async function setupAccount() {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session?.user) return;
+    const metadata = session.user.user_metadata || {};
+    const account = document.getElementById('donorAccount');
+    account.hidden = false;
+    document.getElementById('accountName').textContent = metadata.soypobre_donor_name || session.user.email;
+    document.getElementById('accountButton').textContent = initials(metadata.soypobre_donor_name || 'P');
+  }
+
   function updateLocalities() { neighborhood.replaceChildren(...(localities[province.value] || ['Todos']).map((name) => new Option(name, name))); }
   function updateLabel() { const place = neighborhood.value !== 'Todos' ? neighborhood.value : province.value !== 'Todo el país' ? province.value : country.value; label.textContent = `Mayores donantes de ${place} · ${period.value.toLowerCase()}`; }
   async function invoke() {
@@ -41,5 +51,16 @@
   }
   province.addEventListener('change', () => { updateLocalities(); load(); });
   [country, neighborhood, period].forEach((input) => input.addEventListener('change', load));
+  document.getElementById('accountButton').addEventListener('click', () => {
+    const menu = document.getElementById('accountMenu');
+    menu.hidden = !menu.hidden;
+    document.getElementById('accountButton').setAttribute('aria-expanded', String(!menu.hidden));
+  });
+  document.addEventListener('click', (event) => {
+    const account = document.getElementById('donorAccount');
+    if (!account.hidden && !account.contains(event.target)) document.getElementById('accountMenu').hidden = true;
+  });
+  document.getElementById('logoutDonorButton').addEventListener('click', async () => { await client.auth.signOut(); window.location.assign('../ingresar/'); });
+  setupAccount();
   updateLocalities(); load();
 })();
