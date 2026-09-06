@@ -19,11 +19,11 @@
         <input id="name" name="name" type="text" maxlength="100" autocomplete="name" />
 
         <label for="country">¿En qué país estás?</label>
-        <input id="country" name="country" value="Argentina" maxlength="80" required />
+        <select id="country" name="country" required><option>Argentina</option></select>
         <label for="province">Provincia</label>
-        <input id="province" name="province" maxlength="100" required />
+        <select id="province" name="province" required></select>
         <label for="locality">Barrio / localidad</label>
-        <input id="locality" name="locality" maxlength="100" required />
+        <select id="locality" name="locality" required></select>
 
         <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
         <label class="file-button" for="photo"><span id="photo-label">¿Querés subir una foto tuya?</span><strong>+</strong></label>
@@ -35,6 +35,7 @@
         <p id="save-status" role="status" aria-live="polite"></p>
       </form>
     </main>
+    <script src="../locations.js?v=1"></script>
     <script src="../cloudinary.js?v=1"></script>
     <script src="app.js?v=8"></script>
   </body>

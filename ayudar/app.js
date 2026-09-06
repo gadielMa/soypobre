@@ -82,6 +82,10 @@
     document.getElementById('donorCountry').value = metadata.soypobre_donor_country || 'Argentina';
     document.getElementById('donorProvince').value = metadata.soypobre_donor_province || '';
     document.getElementById('donorLocality').value = metadata.soypobre_donor_locality || '';
+    window.soyPobreLocations?.set(
+      { country: 'donorCountry', province: 'donorProvince', locality: 'donorLocality' },
+      { province: metadata.soypobre_donor_province || '', locality: metadata.soypobre_donor_locality || '' },
+    );
   }
 
   document.querySelectorAll('[data-scroll]').forEach((button) => button.addEventListener('click', () => document.querySelector(button.dataset.scroll)?.scrollIntoView({ behavior: 'smooth' })));
