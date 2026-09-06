@@ -10,7 +10,7 @@ input:focus { border-color: var(--ink); }
 .save-button { align-self: center; width: min(100%, 360px); margin-top: 24px; border: 2px solid #2d6a32; border-radius: 16px; padding: 22px 30px; background: #4e9b55; color: #fff; cursor: pointer; font: inherit; font-size: 24px; font-weight: 700; letter-spacing: .06em; box-shadow: 0 7px 0 #2d6a32; }
 .save-button:hover { background: #5caf63; }
 .save-button:active { transform: translateY(2px); }
-.quiet-actions { display: grid; width: min(100%, 900px); margin: 72px auto 30px; text-align: center; }
-.quiet-actions a { display:flex; align-items:center; justify-content:space-between; width:100%; border:2px solid var(--brown); border-radius:16px; padding:20px 24px; background:transparent; color:var(--brown); font-size:20px; font-weight:700; letter-spacing:.04em; text-decoration:none; transition:background .2s,color .2s; }
-.quiet-actions a:hover, .quiet-actions a:focus-visible { background:var(--brown); color:var(--paper); }
-@media (max-width: 600px) { .quiet-actions { margin-top: 150px; } }
+.switch { align-self:center; display:flex; align-items:center; gap:10px; margin:26px 0 0; color:var(--brown); font-size:16px; font-weight:600; }
+.switch a { display:inline-flex; align-items:center; gap:8px; border-bottom:2px solid var(--brown); padding:5px 1px; color:var(--ink); font-weight:800; text-decoration:none; transition:color .2s,border-color .2s; }
+.switch a span { color:#2d6a32; font-size:20px; line-height:0; transition:transform .2s; }.switch a:hover,.switch a:focus-visible { border-color:#2d6a32; color:#2d6a32; }.switch a:hover span,.switch a:focus-visible span { transform:translate(3px,-3px); }
+@media (max-width: 600px) { .switch { margin-top:14px; font-size:14px; } }
