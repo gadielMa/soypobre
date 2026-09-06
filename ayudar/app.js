@@ -57,6 +57,7 @@
     copy.href = '#';
     copy.onclick = async (event) => { event.preventDefault(); await navigator.clipboard?.writeText(profile.alias || profile.cbu || ''); copy.textContent = 'Copiado'; };
     document.getElementById('donationForm').reset();
+    document.getElementById('receiptFileName').textContent = 'Sólo para completar el registro · no se guarda';
     document.getElementById('donationStatus').textContent = '';
     dialog.showModal();
   }
@@ -108,17 +109,25 @@
     } catch (error) { status.textContent = error.message; }
     finally { button.disabled = false; }
   });
+  document.getElementById('donationReceipt').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    document.getElementById('receiptFileName').textContent = file.name;
+  });
   document.getElementById('donationForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     const receipt = document.getElementById('donationReceipt').files[0];
     const donationStatus = document.getElementById('donationStatus');
     const button = event.currentTarget.querySelector('[type="submit"]');
     if (!selectedProfile || !receipt) return;
+    if (receipt.size > 10 * 1024 * 1024) {
+      donationStatus.textContent = 'El comprobante debe pesar menos de 10 MB.';
+      return;
+    }
     button.disabled = true;
     button.textContent = 'GUARDANDO…';
     try {
-      const uploaded = await window.soyPobreCloudinary.uploadImage(receipt, 'SoyPobre/comprobantes');
-      await invoke('soypobre-donation', { method: 'POST', body: { recipient_id: selectedProfile.id, amount: document.getElementById('donationAmount').value, receipt_url: uploaded.url, receipt_public_id: uploaded.publicId } });
+      await invoke('soypobre-donation', { method: 'POST', body: { recipient_id: selectedProfile.id, amount: document.getElementById('donationAmount').value } });
       donationStatus.style.color = '#315f45';
       donationStatus.textContent = 'Donación registrada. Ya impacta en el ranking.';
       await loadRanking();
