@@ -134,7 +134,9 @@
       await invoke('soypobre-donation', { method: 'POST', body: { recipient_id: selectedProfile.id, amount: document.getElementById('donationAmount').value } });
       donationStatus.style.color = '#315f45';
       donationStatus.textContent = 'Donación registrada. Ya impacta en el ranking.';
-      await loadRanking();
+      dialog.close();
+      window.location.assign('ranking/');
+      return;
     } catch (error) { donationStatus.textContent = error.message; }
     finally { button.disabled = false; button.textContent = 'REGISTRAR DONACIÓN'; }
   });
