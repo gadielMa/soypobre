@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex, nofollow" />
     <link rel="canonical" href="https://induliru.com/soypobre/listo/" />
     <title>Completá tu perfil · Soy Pobre</title>
-    <link rel="stylesheet" href="styles.css?v=2" />
+    <link rel="stylesheet" href="styles.css?v=3" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -17,13 +17,6 @@
 
         <label for="name">¿Querés decirnos tu nombre?</label>
         <input id="name" name="name" type="text" maxlength="100" autocomplete="name" />
-
-        <label for="country">¿En qué país estás?</label>
-        <select id="country" name="country" required><option>Argentina</option></select>
-        <label for="province">Provincia</label>
-        <select id="province" name="province" required></select>
-        <label for="locality">Barrio / localidad</label>
-        <select id="locality" name="locality" required></select>
 
         <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
         <label class="file-button" for="photo"><span id="photo-label">¿Querés subir una foto tuya?</span><strong>+</strong></label>
@@ -35,8 +28,7 @@
         <p id="save-status" role="status" aria-live="polite"></p>
       </form>
     </main>
-    <script src="../locations.js?v=1"></script>
     <script src="../cloudinary.js?v=1"></script>
-    <script src="app.js?v=8"></script>
+    <script src="app.js?v=9"></script>
   </body>
 </html>

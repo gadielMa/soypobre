@@ -82,9 +82,6 @@
       photo_path: photoPath,
       photo_url: photoUrl,
       photo_public_id: photoPublicId,
-      country: profile.country || 'Argentina',
-      province: profile.province || null,
-      locality: profile.locality || null,
     };
     // Un cambio de imagen vuelve a requerir aprobación; editar texto no la invalida.
     if (photoToUpload) payload.photo_status = 'pending';
@@ -101,7 +98,7 @@
     if (!client || !user) return;
     const { data, error } = await client
       .from('soypobre_requests')
-      .select('alias, name, story, photo_path, photo_url, photo_public_id, photo_status, country, province, locality')
+      .select('alias, name, story, photo_path, photo_url, photo_public_id, photo_status')
       .eq('user_id', user.id)
       .maybeSingle();
     if (error || !data) return;
@@ -114,9 +111,6 @@
       photoPublicId: data.photo_public_id,
       photoPath: data.photo_path,
       photoStatus: data.photo_status,
-      country: data.country,
-      province: data.province,
-      locality: data.locality,
     };
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
     renderProfile();

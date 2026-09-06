@@ -26,22 +26,16 @@
     return payload;
   }
 
-  function profileLocation(profile) { return [profile.locality, profile.province, profile.country].filter(Boolean).join(' · ') || 'Argentina'; }
-
   function renderProfiles(profiles) {
     if (!profiles.length) { grid.innerHTML = '<p class="empty-feed">Todavía no hay historias para este territorio.</p>'; return; }
-    grid.innerHTML = profiles.map((profile, index) => `<article class="story-card ${index === 0 ? 'featured' : ''}"><div class="card-photo">${profile.photo_url ? `<img class="story-image" src="${escape(profile.photo_url)}" alt="Foto de ${escape(profile.name || profile.alias || 'perfil')}" />` : `<span>${initials(profile.name || profile.alias)}</span>`}</div><div class="card-body"><p class="story-place"><span class="text-chip">${escape(profileLocation(profile))}</span></p><h3><span class="text-chip">${escape(profile.name || profile.alias || 'Una persona necesita ayuda')}</span></h3><p class="story-summary"><span class="text-chip">${escape(profile.story || 'Esta persona todavía no compartió su historia.')}</span></p><button type="button" data-profile-id="${profile.id}"><span class="text-chip">Transferir y registrar</span><span class="button-arrow">↗</span></button></div></article>`).join('');
+    grid.innerHTML = profiles.map((profile, index) => `<article class="story-card ${index === 0 ? 'featured' : ''}"><div class="card-photo">${profile.photo_url ? `<img class="story-image" src="${escape(profile.photo_url)}" alt="Foto de ${escape(profile.name || profile.alias || 'perfil')}" />` : `<span>${initials(profile.name || profile.alias)}</span>`}</div><div class="card-body"><h3><span class="text-chip">${escape(profile.name || profile.alias || 'Una persona necesita ayuda')}</span></h3><p class="story-summary"><span class="text-chip">${escape(profile.story || 'Esta persona todavía no compartió su historia.')}</span></p><button type="button" data-profile-id="${profile.id}"><span class="text-chip">Transferir y registrar</span><span class="button-arrow">↗</span></button></div></article>`).join('');
     grid.querySelectorAll('[data-profile-id]').forEach((button) => button.addEventListener('click', () => openDonation(profiles.find((profile) => profile.id === button.dataset.profileId))));
   }
 
   async function loadProfiles() {
     try {
       status.textContent = 'Cargando historias reales…';
-      const country = document.getElementById('feedCountry').value;
-      const province = document.getElementById('feedProvince').value.trim();
-      const locality = document.getElementById('feedLocality').value.trim();
-      const query = `?country=${encodeURIComponent(country)}${province ? `&province=${encodeURIComponent(province)}` : ''}${locality ? `&locality=${encodeURIComponent(locality)}` : ''}`;
-      const { profiles } = await invoke('soypobre-feed', { query });
+      const { profiles } = await invoke('soypobre-feed');
       renderProfiles(profiles || []);
       status.textContent = `${profiles?.length || 0} historia${profiles?.length === 1 ? '' : 's'} disponible${profiles?.length === 1 ? '' : 's'}.`;
     } catch (error) { status.textContent = error.message; }
@@ -89,7 +83,6 @@
   }
 
   document.querySelectorAll('[data-scroll]').forEach((button) => button.addEventListener('click', () => document.querySelector(button.dataset.scroll)?.scrollIntoView({ behavior: 'smooth' })));
-  ['feedCountry', 'feedProvince', 'feedLocality'].forEach((id) => document.getElementById(id).addEventListener('change', loadProfiles));
   dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
   donorProfileDialog.querySelector('.dialog-close').addEventListener('click', () => donorProfileDialog.close());
   document.getElementById('accountButton').addEventListener('click', () => {

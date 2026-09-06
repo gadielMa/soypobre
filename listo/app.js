@@ -95,9 +95,6 @@
       photo_url: uploadedPhoto?.url || null,
       photo_public_id: uploadedPhoto?.publicId || null,
       photo_status: file ? 'pending' : 'approved',
-      country: profile.country,
-      province: profile.province,
-      locality: profile.locality,
     });
     if (error) throw error;
     profile.photoUrl = uploadedPhoto?.url || null;
@@ -119,9 +116,6 @@
     const profile = {
       alias: alias || null,
       name: document.getElementById('name').value.trim() || null,
-      country: document.getElementById('country').value.trim() || 'Argentina',
-      province: document.getElementById('province').value.trim() || null,
-      locality: document.getElementById('locality').value.trim() || null,
       story: document.getElementById('story').value.trim() || null,
       photoName: optimizedFile?.name || null,
     };
