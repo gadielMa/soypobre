@@ -135,6 +135,7 @@
   });
 
   setupAccount();
+  client?.auth.onAuthStateChange((_event, session) => { if (session?.user) setupAccount(); });
   loadProfiles();
   loadRanking();
 })();

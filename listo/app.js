@@ -68,9 +68,11 @@
   async function persistProfile(profile, file) {
     if (!profile.alias || !window.supabase) return;
 
+    // Este alta es anónima y no debe heredar una sesión de donante abierta.
     const client = window.supabase.createClient(
       'https://jbrjsvkdnyzptkxnflbe.supabase.co',
-      'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1'
+      'sb_publishable_L7rQxIHg2i7gbuozJrgfWg_NjD3Elz1',
+      { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } },
     );
     let uploadedPhoto = null;
     let legacyPhotoPath = null;
