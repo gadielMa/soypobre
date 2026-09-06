@@ -94,6 +94,7 @@
       photo_path: legacyPhotoPath,
       photo_url: uploadedPhoto?.url || null,
       photo_public_id: uploadedPhoto?.publicId || null,
+      photo_status: file ? 'pending' : 'approved',
       country: profile.country,
       province: profile.province,
       locality: profile.locality,
@@ -102,6 +103,7 @@
     profile.photoUrl = uploadedPhoto?.url || null;
     profile.photoPublicId = uploadedPhoto?.publicId || null;
     profile.photoPath = legacyPhotoPath;
+    profile.photoStatus = file ? 'pending' : 'approved';
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 

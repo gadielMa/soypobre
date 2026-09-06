@@ -56,6 +56,7 @@ form.addEventListener('submit', async (event) => {
       photo_path: legacyPhotoPath,
       photo_url: uploadedPhoto?.url || null,
       photo_public_id: uploadedPhoto?.publicId || null,
+      photo_status: file ? 'pending' : 'approved',
     });
     if (insert.error) throw insert.error;
     form.reset();

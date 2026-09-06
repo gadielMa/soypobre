@@ -74,7 +74,7 @@
         photoPublicId = null;
       }
     }
-    const { error } = await client.from('soypobre_requests').upsert({
+    const payload = {
       user_id: user.id,
       alias: profile.alias,
       name: profile.name,
@@ -85,11 +85,15 @@
       country: profile.country || 'Argentina',
       province: profile.province || null,
       locality: profile.locality || null,
-    }, { onConflict: 'user_id' });
+    };
+    // Un cambio de imagen vuelve a requerir aprobación; editar texto no la invalida.
+    if (photoToUpload) payload.photo_status = 'pending';
+    const { error } = await client.from('soypobre_requests').upsert(payload, { onConflict: 'user_id' });
     if (error) throw error;
     profile.photoUrl = photoUrl;
     profile.photoPublicId = photoPublicId;
     profile.photoPath = photoPath;
+    if (photoToUpload) profile.photoStatus = 'pending';
     localStorage.setItem('soypobre-profile', JSON.stringify(profile));
   }
 
@@ -97,7 +101,7 @@
     if (!client || !user) return;
     const { data, error } = await client
       .from('soypobre_requests')
-      .select('alias, name, story, photo_path, photo_url, photo_public_id, country, province, locality')
+      .select('alias, name, story, photo_path, photo_url, photo_public_id, photo_status, country, province, locality')
       .eq('user_id', user.id)
       .maybeSingle();
     if (error || !data) return;
@@ -109,6 +113,7 @@
       photoUrl: data.photo_url,
       photoPublicId: data.photo_public_id,
       photoPath: data.photo_path,
+      photoStatus: data.photo_status,
       country: data.country,
       province: data.province,
       locality: data.locality,
@@ -173,6 +178,8 @@
       image.className = 'profile-image';
       document.getElementById('profilePhoto').replaceChildren(image);
     } else if (profile.photoName) document.getElementById('profilePhoto').textContent = profile.photoName;
+    const reviewNotice = document.getElementById('photoReviewNotice');
+    reviewNotice.hidden = !(profile.photoStatus === 'pending' && (profile.photoUrl || profile.photoPath || profile.photoName));
     getPhoto().then((file) => {
       if (file && photoRow) {
         photoRow.hidden = false;
