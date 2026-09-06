@@ -1,7 +1,7 @@
 :root { --ink: #171717; --paper: #d9d6d2; --brown: #65483a; }
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+body { margin: 0; background: radial-gradient(circle at 80% 18%,#ddff73 0 2%,transparent 18%),radial-gradient(circle at 82% 68%,#c7bcff 0 6%,transparent 27%),var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
 main { min-height: 100vh; padding: 24px; }
 form { width: min(100%, 900px); min-height: calc(100vh - 48px); display: flex; flex-direction: column; justify-content: center; gap: 18px; margin: 0 auto; }
 label { font-size: clamp(56px, 10vw, 132px); font-weight: 700; letter-spacing: -.06em; line-height: .9; }
